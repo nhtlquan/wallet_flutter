@@ -1,5 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallet_app/src/pages/pageReciveMoney.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/theme/theme.dart';
 import 'package:flutter_wallet_app/src/widgets/balance_card.dart';
@@ -45,8 +47,16 @@ class _HomePageState extends State<HomePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        _icon(Icons.send, "Send"),
-        _icon(Icons.arrow_downward, "Receive"),
+        InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, '/transfer');
+            },
+            child: _icon(Icons.send, "Send")),
+        InkWell(
+            onTap: () {
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => ReceiveMoneyPage()));
+            },
+            child: _icon(Icons.arrow_downward, "Receive")),
         _icon(Icons.payment, "Payment"),
         _icon(Icons.add_shopping_cart, "Buy PIT"),
       ],
@@ -56,26 +66,21 @@ class _HomePageState extends State<HomePage> {
   Widget _icon(IconData icon, String text) {
     return Column(
       children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/transfer');
-          },
-          child: Container(
-            height: 80,
-            width: 80,
-            margin: EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                boxShadow: <BoxShadow>[BoxShadow(color: Color(0xfff3f3f3), offset: Offset(5, 5), blurRadius: 10)]),
-            child: Material(
-                elevation: 3,
-                type: MaterialType.canvas,
-                color: Colors.white,
-                shadowColor: Color(0xfff3f3f3),
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                child: Icon(icon)),
-          ),
+        Container(
+          height: 80,
+          width: 80,
+          margin: EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              boxShadow: <BoxShadow>[BoxShadow(color: Color(0xfff3f3f3), offset: Offset(5, 5), blurRadius: 10)]),
+          child: Material(
+              elevation: 3,
+              type: MaterialType.canvas,
+              color: Colors.white,
+              shadowColor: Color(0xfff3f3f3),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              child: Icon(icon)),
         ),
         Text(text,
             style: GoogleFonts.muli(
@@ -130,51 +135,50 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [
-          BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))
-        ]),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-                gap: 8,
-                activeColor: Colors.white,
-                iconSize: 24,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                duration: Duration(milliseconds: 800),
-                tabBackgroundColor: LightColor.navyBlue1,
-                tabs: [
-                  GButton(
-                    icon: Icons.home,
-                    text: 'Home',
-                    iconActiveColor: LightColor.yellow2,
-                  ),
-                  GButton(
-                    icon: Icons.history,
-                    text: 'History',
-                    iconActiveColor: LightColor.yellow2,
-                  ),
-                  GButton(
-                    icon: Icons.supervisor_account,
-                    text: 'Team',
-                    iconActiveColor: LightColor.yellow2,
-                  ),
-                  GButton(
-                    icon: Icons.person,
-                    text: 'Profile',
-                    iconActiveColor: LightColor.yellow2,
-                  ),
-                ],
-                selectedIndex: _page,
-                onTabChange: (index) {
-                  setState(() {
-                    _page = index;
-                  });
-                }),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+              color: Colors.white, boxShadow: [BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))]),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+              child: GNav(
+                  gap: 8,
+                  activeColor: Colors.white,
+                  iconSize: 24,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  duration: Duration(milliseconds: 800),
+                  tabBackgroundColor: LightColor.navyBlue1,
+                  tabs: [
+                    GButton(
+                      icon: Icons.home,
+                      text: 'Home',
+                      iconActiveColor: LightColor.yellow2,
+                    ),
+                    GButton(
+                      icon: Icons.history,
+                      text: 'History',
+                      iconActiveColor: LightColor.yellow2,
+                    ),
+                    GButton(
+                      icon: Icons.supervisor_account,
+                      text: 'Team',
+                      iconActiveColor: LightColor.yellow2,
+                    ),
+                    GButton(
+                      icon: Icons.person,
+                      text: 'Profile',
+                      iconActiveColor: LightColor.yellow2,
+                    ),
+                  ],
+                  selectedIndex: _page,
+                  onTabChange: (index) {
+                    setState(() {
+                      _page = index;
+                    });
+                  }),
+            ),
           ),
         ),
-      ),
         body: SafeArea(
             child: SingleChildScrollView(
           child: Container(

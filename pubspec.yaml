@@ -26,6 +26,7 @@ dependencies:
   google_fonts: ^0.3.9
   curved_navigation_bar: ^0.3.3
   google_nav_bar: ^3.0.0
+  flutter_svg: ^0.18.0
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +39,8 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
+  assets:
+    - assets/icons/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

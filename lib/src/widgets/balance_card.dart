@@ -12,7 +12,6 @@ class BalanceCard extends StatelessWidget {
       child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(40)),
           child: Container(
-
             width: MediaQuery.of(context).size.width-60,
             height: MediaQuery.of(context).size.height * .27,
             color: LightColor.navyBlue1,

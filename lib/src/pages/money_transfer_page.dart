@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_wallet_app/src/ResourceUtil.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
+import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 
 class MoneyTransferPage extends StatefulWidget {
@@ -10,67 +14,64 @@ class MoneyTransferPage extends StatefulWidget {
 }
 
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
-  Align _buttonWidget() {
-    return Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-            height: MediaQuery.of(context).size.height * .48,
-            decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40))),
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.5,
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    children: <Widget>[
-                      _countButton("1"),
-                      _countButton("2"),
-                      _countButton("3"),
-                      _countButton("4"),
-                      _countButton("5"),
-                      _countButton("6"),
-                      _countButton("7"),
-                      _countButton("8"),
-                      _countButton("9"),
-                      _icon(Icons.euro_symbol, true),
-                      _countButton("0"),
-                      _icon(Icons.backspace, false),
-                    ],
-                  ),
-                ),
-                _transferButton()
-              ],
-            )));
-  }
 
   Widget _transferButton() {
-    return Container(
-        margin: EdgeInsets.only(bottom: 20),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        decoration: BoxDecoration(
-            color: LightColor.navyBlue2,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        child: Wrap(
-          children: <Widget>[
-            Transform.rotate(
-              angle: 70,
-              child: Icon(
-                Icons.swap_calls,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(width: 10),
+    return Column(
+      children: [
+        Row(
+          children: [
             TitleText(
-              text: "Transfer",
+              text: "Fee:",
+              color: Colors.white,
+            ),
+            Spacer(),
+            TitleText(
+              text: "1.00 PIT",
               color: Colors.white,
             ),
           ],
-        ));
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            TitleText(
+              text: "Total:",
+              color: Colors.white,
+            ),
+            Spacer(),
+            TitleText(
+              text: "2.00 PIT",
+              color: Colors.white,
+            ),
+          ],
+        ),
+        Container(
+            margin: EdgeInsets.only(bottom: 10, top: 20),
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            decoration: BoxDecoration(color: LightColor.navyBlue2, borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Center(
+              child: Wrap(
+                children: <Widget>[
+                  Transform.rotate(
+                    angle: 70,
+                    child: Icon(
+                      Icons.swap_calls,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  TitleText(
+                    text: "Continue",
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            )),
+      ],
+    );
   }
 
   Widget _icon(IconData icon, bool isBackground) {
@@ -82,9 +83,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               decoration: BoxDecoration(
-                  color: isBackground
-                      ? LightColor.lightGrey
-                      : Theme.of(context).backgroundColor,
+                  color: isBackground ? LightColor.lightGrey : Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               child: Icon(icon),
             ),
@@ -92,10 +91,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                 ? SizedBox()
                 : Text(
                     "Change",
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: LightColor.navyBlue2),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: LightColor.navyBlue2),
                   )
           ],
         ));
@@ -124,104 +120,232 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(),
-                    ),
-                    Container(
-                      height: 55,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  "https://jshopping.in/images/detailed/591/ibboll-Fashion-Mens-Optical-Glasses-Frames-Classic-Square-Wrap-Frame-Luxury-Brand-Men-Clear-Eyeglasses-Frame.jpg"),
-                              fit: BoxFit.cover),
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Sending money to Geryson',
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                        width: 130,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: LightColor.navyBlue2,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15))),
-                        child: TitleText(
-                          text: "\$10,000",
-                          color: Colors.white,
-                        )),
-                    Expanded(
-                      flex: 2,
-                      child: SizedBox(),
-                    )
-                  ],
-                ),
-              ),
-              Positioned(
-                left: -140,
-                top: -270,
-                child: CircleAvatar(
-                  radius: 190,
-                  backgroundColor: LightColor.lightBlue2,
-                ),
-              ),
-              Positioned(
-                left: -130,
-                top: -300,
-                child: CircleAvatar(
-                  radius: 190,
-                  backgroundColor: LightColor.lightBlue1,
-                ),
-              ),
-              Positioned(
-                top: MediaQuery.of(context).size.height * .4,
-                right: -150,
-                child: CircleAvatar(
-                  radius: 130,
-                  backgroundColor: LightColor.yellow2,
-                ),
-              ),
-              Positioned(
-                top: MediaQuery.of(context).size.height * .4,
-                right: -180,
-                child: CircleAvatar(
-                  radius: 130,
-                  backgroundColor: LightColor.yellow,
-                ),
-              ),
-              Positioned(
-                  left: 0,
-                  top: 40,
-                  child: Row(
+              BackgroundWidget(),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      BackButton(color: Colors.white,),
-                      SizedBox(width: 20),
+                      Row(
+                        children: <Widget>[
+                          BackButton(
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 20),
+                          TitleText(
+                            text: "Send Money",
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 55,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        "https://jshopping.in/images/detailed/591/ibboll-Fashion-Mens-Optical-Glasses-Frames-Classic-Square-Wrap-Frame-Luxury-Brand-Men-Clear-Eyeglasses-Frame.jpg"),
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.all(Radius.circular(50))),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total balance',
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                              ),
+                              TitleText(
+                                text: "10,000 PIT",
+                                fontSize: 30,
+                                color: Colors.white,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
                       TitleText(
-                        text: "Transfer",
+                        text: "Recipient",
                         color: Colors.white,
-                      )
+                        fontSize: 16,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: LightColor.navyBlue2, borderRadius: BorderRadius.all(Radius.circular(8))),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    prefixIcon: Icon(
+                                      Icons.person_outline,
+                                      size: 26,
+                                      color: Colors.white,
+                                    ),
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.all(10)),
+                                textAlign: TextAlign.left,
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.search,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  height: 1.53,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: Center(
+                              child:   SvgPicture.asset(
+                                ResourceUtil.icon('ic_qrcode.svg'),
+                                width: 32,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TitleText(
+                        text: "Amount",
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: LightColor.navyBlue2, borderRadius: BorderRadius.all(Radius.circular(8))),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    prefixIcon: Icon(
+                                      Icons.monetization_on,
+                                      size: 26,
+                                      color: Colors.white,
+                                    ),
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.all(10)),
+                                textAlign: TextAlign.left,
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.search,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  height: 1.53,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Icon(
+                              Icons.compare_arrows,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                          Flexible(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: LightColor.navyBlue2, borderRadius: BorderRadius.all(Radius.circular(8))),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    suffixIcon: Container(
+                                      width: 21,
+                                      child: Center(
+                                        child: Text(
+                                          'VNĐ',
+                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.all(10)),
+                                textAlign: TextAlign.left,
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.search,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  height: 1.53,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TitleText(
+                        text: "Note",
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 150,
+                        margin: EdgeInsets.only(bottom: 20),
+                        alignment: Alignment.topLeft,
+                        decoration: BoxDecoration(
+                            color: LightColor.navyBlue2, borderRadius: BorderRadius.all(Radius.circular(8))),
+                        child: TextField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.all(10)),
+                          textAlign: TextAlign.left,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.search,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            height: 1.53,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: SizedBox(),
+                      ),
+                      _transferButton()
                     ],
-                  )),
-              _buttonWidget(),
+                  ),
+                ),
+              ),
             ],
           ),
         ));
