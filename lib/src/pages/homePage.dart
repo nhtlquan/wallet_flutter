@@ -1,7 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallet_app/src/pages/buyPitMoney.dart';
 import 'package:flutter_wallet_app/src/pages/pageReciveMoney.dart';
+import 'package:flutter_wallet_app/src/pages/profilePage.dart';
+import 'package:flutter_wallet_app/src/pages/transactionPage.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/theme/theme.dart';
 import 'package:flutter_wallet_app/src/widgets/balance_card.dart';
@@ -19,7 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _page = 0;
-  GlobalKey _bottomNavigationKey = GlobalKey();
 
   Widget _appBar() {
     return Row(
@@ -57,8 +59,16 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(context, CupertinoPageRoute(builder: (context) => ReceiveMoneyPage()));
             },
             child: _icon(Icons.arrow_downward, "Receive")),
-        _icon(Icons.payment, "Payment"),
-        _icon(Icons.add_shopping_cart, "Buy PIT"),
+        InkWell(
+            onTap: () {
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BuyPitPage()));
+            },
+            child: _icon(Icons.payment, "Payment")),
+        InkWell(
+            onTap: () {
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => BuyPitPage()));
+            },
+            child: _icon(Icons.add_shopping_cart, "Buy PIT")),
       ],
     );
   }
@@ -135,112 +145,129 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-              color: Colors.white, boxShadow: [BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))]),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-              child: GNav(
-                  gap: 8,
-                  activeColor: Colors.white,
-                  iconSize: 24,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  duration: Duration(milliseconds: 800),
-                  tabBackgroundColor: LightColor.navyBlue1,
-                  tabs: [
-                    GButton(
-                      icon: Icons.home,
-                      text: 'Home',
-                      iconActiveColor: LightColor.yellow2,
-                    ),
-                    GButton(
-                      icon: Icons.history,
-                      text: 'History',
-                      iconActiveColor: LightColor.yellow2,
-                    ),
-                    GButton(
-                      icon: Icons.supervisor_account,
-                      text: 'Team',
-                      iconActiveColor: LightColor.yellow2,
-                    ),
-                    GButton(
-                      icon: Icons.person,
-                      text: 'Profile',
-                      iconActiveColor: LightColor.yellow2,
-                    ),
-                  ],
-                  selectedIndex: _page,
-                  onTabChange: (index) {
-                    setState(() {
-                      _page = index;
-                    });
-                  }),
-            ),
-          ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, boxShadow: [BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))]),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+          child: GNav(
+              gap: 8,
+              activeColor: Colors.white,
+              iconSize: 24,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              duration: Duration(milliseconds: 800),
+              tabBackgroundColor: LightColor.navyBlue1,
+              tabs: [
+                GButton(
+                  icon: Icons.home,
+                  text: 'Home',
+                  iconActiveColor: LightColor.yellow2,
+                ),
+                GButton(
+                  icon: Icons.history,
+                  text: 'History',
+                  iconActiveColor: LightColor.yellow2,
+                ),
+                GButton(
+                  icon: Icons.supervisor_account,
+                  text: 'Team',
+                  iconActiveColor: LightColor.yellow2,
+                ),
+                GButton(
+                  icon: Icons.person,
+                  text: 'Profile',
+                  iconActiveColor: LightColor.yellow2,
+                ),
+              ],
+              selectedIndex: _page,
+              onTabChange: (index) {
+                setState(() {
+                  _page = index;
+                });
+              }),
         ),
-        body: SafeArea(
-            child: SingleChildScrollView(
-          child: Container(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: _appBar(),
+      ),
+      body: getBody(),
+    );
+  }
+
+  getBody() {
+    switch (_page) {
+      case 0:
+        return HomeView();
+      case 1:
+        return TransactionPage();
+      case 2:
+        return HomeView();
+      case 3:
+        return ProfilePage();
+    }
+  }
+
+  Widget HomeView() {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Container(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: _appBar(),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TitleText(text: "My wallet"),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * .27,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (index, ct) {
+                  return BalanceCard();
+                },
+                itemCount: 3,
               ),
-              SizedBox(
-                height: 20,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TitleText(
+                text: "Service",
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TitleText(text: "My wallet"),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: _operationsWidget(),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TitleText(
+                text: "Transactions",
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * .27,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (index, ct) {
-                    return BalanceCard();
-                  },
-                  itemCount: 3,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TitleText(
-                  text: "Service",
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: _operationsWidget(),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TitleText(
-                  text: "Transactions",
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: _transectionList(),
-              ),
-            ],
-          )),
-        )));
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: _transectionList(),
+            ),
+          ],
+        )),
+      ),
+    );
   }
 }

@@ -6,10 +6,13 @@ class TitleText extends StatelessWidget {
   final String text;
   final double fontSize;
   final Color color;
+  final FontWeight fontWeight;
+
   const TitleText(
       {Key key,
       this.text,
       this.fontSize = 18,
+        this.fontWeight = FontWeight.w800,
       this.color = LightColor.navyBlue2})
       : super(key: key);
   @override
@@ -17,7 +20,7 @@ class TitleText extends StatelessWidget {
     return Container(
       child: Text(text,
           style: GoogleFonts.muli(
-              fontSize: fontSize, fontWeight: FontWeight.w800, color: color)),
+              fontSize: fontSize, fontWeight: fontWeight, color: color)),
     );
   }
 }
