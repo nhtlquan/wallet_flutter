@@ -142,7 +142,7 @@ class _ReceiveMoneyPageState extends State<ReceiveMoneyPage> {
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: NetworkImage(
-                                        "https://jshopping.in/images/detailed/591/ibboll-Fashion-Mens-Optical-Glasses-Frames-Classic-Square-Wrap-Frame-Luxury-Brand-Men-Clear-Eyeglasses-Frame.jpg"),
+                                        "https://static.comicvine.com/uploads/original/11133/111336417/6168632-gal_gadot.jpg"),
                                     fit: BoxFit.cover),
                                 border: Border.all(color: Colors.blueAccent, width: 5),
                                 borderRadius: BorderRadius.all(Radius.circular(50))),

@@ -28,6 +28,7 @@ dependencies:
   google_nav_bar: ^3.0.0
   flutter_svg: ^0.18.0
   menu_button: ^1.2.1
+  font_awesome_flutter: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -42,10 +43,25 @@ flutter:
 
   assets:
     - assets/icons/
+    - assets/login_logo.png
+    - assets/login_logo1.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  fonts:
+    - family: WorkSansSemiBold
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-SemiBold.ttf
+
+    - family: WorkSansBold
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Bold.ttf
+
+    - family: WorkSansMedium
+      fonts:
+        - asset: assets/fonts/Work_Sans/WorkSans-Medium.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

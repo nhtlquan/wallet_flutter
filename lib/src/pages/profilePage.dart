@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wallet_app/src/ResourceUtil.dart';
+import 'package:flutter_wallet_app/src/login/2faPage.dart';
+import 'package:flutter_wallet_app/src/login/changePassword.dart';
+import 'package:flutter_wallet_app/src/login/kycPage.dart';
+import 'package:flutter_wallet_app/src/pages/updateProfile.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 
@@ -7,6 +12,7 @@ class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
+
 //SELL Account 8710 CP, Phanmasta, Hexe, Alts Full Jin, Trade with MiddleMan service, Pm more info, Discord:
 // NhtlQuan#0335
 class _ProfilePageState extends State<ProfilePage> {
@@ -78,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage(
-                                            "https://jshopping.in/images/detailed/591/ibboll-Fashion-Mens-Optical-Glasses-Frames-Classic-Square-Wrap-Frame-Luxury-Brand-Men-Clear-Eyeglasses-Frame.jpg"),
+                                            "https://static.comicvine.com/uploads/original/11133/111336417/6168632-gal_gadot.jpg"),
                                         fit: BoxFit.cover),
                                     border: Border.all(color: Colors.white, width: 5),
                                     borderRadius: BorderRadius.all(Radius.circular(50))),
@@ -141,10 +147,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               padding: EdgeInsets.all(0.0),
                               crossAxisCount: 4,
                               children: <Widget>[
-                                itemService(Icons.edit, 'Edit Profile', Colors.blueAccent),
-                                itemService(Icons.lock, 'Password', Colors.red),
-                                itemService(Icons.verified_user, '2FA', Colors.green),
-                                itemService(Icons.person, 'KYC', LightColor.yellow),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context, CupertinoPageRoute(builder: (context) => UpdateProfilePage()));
+                                  },
+                                  child: itemService(Icons.edit, 'Edit Profile', Colors.blueAccent),
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context, CupertinoPageRoute(builder: (context) => ChangePasswordPage()));
+                                    },
+                                    child: itemService(Icons.lock, 'Password', Colors.red)),
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.push(context,
+                                          CupertinoPageRoute(builder: (context) => TwoFactorAuthenticationPage()));
+                                    },
+                                    child: itemService(Icons.verified_user, '2FA', Colors.green)),
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context, CupertinoPageRoute(builder: (context) => VerifyKYCPage()));
+                                    },
+                                    child: itemService(Icons.person, 'KYC', LightColor.yellow)),
                               ]),
                         ),
                       ),
@@ -167,7 +194,25 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                    Center(
+                      child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                              color: LightColor.navyBlue1, borderRadius: BorderRadius.all(Radius.circular(8))),
+                          child: Center(
+                            child: Wrap(
+                              children: <Widget>[
+                                TitleText(
+                                  text: "Logout",
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          )),
+                    ),
                   ],
                 ),
               ),
@@ -187,7 +232,6 @@ class _ProfilePageState extends State<ProfilePage> {
             decoration: BoxDecoration(color: LightColor.navyBlue2, borderRadius: BorderRadius.circular(15)),
             child: Icon(
               icon,
-
               color: Colors.white,
             ),
           ),

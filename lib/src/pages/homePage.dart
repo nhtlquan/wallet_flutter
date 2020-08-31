@@ -27,8 +27,8 @@ class _HomePageState extends State<HomePage> {
     return Row(
       children: <Widget>[
         CircleAvatar(
-          backgroundImage: NetworkImage(
-              "https://jshopping.in/images/detailed/591/ibboll-Fashion-Mens-Optical-Glasses-Frames-Classic-Square-Wrap-Frame-Luxury-Brand-Men-Clear-Eyeglasses-Frame.jpg"),
+          backgroundImage:
+              NetworkImage("https://static.comicvine.com/uploads/original/11133/111336417/6168632-gal_gadot.jpg"),
         ),
         SizedBox(width: 15),
         TitleText(text: "Hello,"),
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
               activeColor: Colors.white,
               iconSize: 24,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              duration: Duration(milliseconds: 800),
+              duration: Duration(milliseconds: 300),
               tabBackgroundColor: LightColor.navyBlue1,
               tabs: [
                 GButton(
@@ -198,7 +198,12 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return TransactionPage();
       case 2:
-        return HomeView();
+        return Container(
+          child: Center(
+              child: TitleText(
+            text: 'Coming soon',
+          )),
+        );
       case 3:
         return ProfilePage();
     }
