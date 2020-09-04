@@ -45,7 +45,7 @@ class TabIndicationPainter extends CustomPainter {
     canvas.drawShadow(path, Color(0xFFfbab66), 3.0, true);
     canvas.drawPath(path, painter);
   }
-
+//SELL MY ACCOUNT: PHANTASMA: 9008 CP, PEN SET, FULL RED, FAMILY CP: 30K, PM ME ON DISCORD FOR DETAIL: NhtlQuan#0335
   @override
   bool shouldRepaint(TabIndicationPainter oldDelegate) => true;
 }
