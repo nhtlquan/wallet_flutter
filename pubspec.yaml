@@ -31,6 +31,19 @@ dependencies:
   font_awesome_flutter: ^8.0.1
   flutter_string_encryption: ^0.3.1
   cipher2: ^0.3.5
+  dio: ^3.0.10
+  crypto: ^2.1.5
+  loading: ^1.0.2
+  rxdart: ^0.24.1
+  fluttertoast: ^7.0.4
+  image_crop: ^0.3.2
+  image_picker: ^0.6.7+7
+  pbkdf2_dart: ^2.1.0
+  encrypt: ^4.0.2
+  salt: ^0.1.0
+  password_hash: ^2.0.0
+  pointycastle: ^1.0.2
+  password: ^1.0.0
 
 dev_dependencies:
   flutter_test:

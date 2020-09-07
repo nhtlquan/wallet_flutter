@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wallet_app/src/Helper/ChooseImageHelper.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
@@ -141,30 +142,35 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
                                     height: 300,
                                     fit: BoxFit.cover,
                                   ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 300,
-                                    color: Colors.black.withOpacity(0.4),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.cloud_upload,
-                                            color: Colors.white,
-                                            size: 60,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          TitleText(
-                                            text: 'Choose File',
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                          )
-                                        ],
+                                  InkWell(
+                                    onTap: () {
+                                      _showChooseImageAvatar();
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 300,
+                                      color: Colors.black.withOpacity(0.4),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.cloud_upload,
+                                              color: Colors.white,
+                                              size: 60,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            TitleText(
+                                              text: 'Choose File',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -202,5 +208,14 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
             ],
           ),
         ));
+  }
+
+  void _showChooseImageAvatar() {
+    var choose = new ChooseImageHelper(context: this.context, isCrop: true);
+    choose.title = "Choose your KYC image";
+    choose.onShowLoading = () {};
+    choose.onHideLoading = () {};
+    choose.onChooseImage = (File file) {};
+    choose.show();
   }
 }

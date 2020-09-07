@@ -9,7 +9,7 @@ import 'package:flutter_wallet_app/src/theme/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'src/login/changePassword.dart';
-import 'src/pages/homePage.dart';
+import 'src/pages/MainPage.dart';
 import 'src/pages/money_transfer_page.dart';
 import 'src/widgets/customRoute.dart';
 

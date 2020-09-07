@@ -1,13 +1,20 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
+import 'package:flutter_wallet_app/src/Util/Util.dart';
 import 'package:flutter_wallet_app/src/login/forgot2FA.dart';
 import 'package:flutter_wallet_app/src/login/forgotPass.dart';
 import 'package:flutter_wallet_app/src/login/style/theme.dart' as Theme;
 import 'package:flutter_wallet_app/src/login/utils/bubble_indication_painter.dart';
-import 'package:flutter_wallet_app/src/pages/homePage.dart';
+import 'package:flutter_wallet_app/src/pages/MainPage.dart';
+import 'package:flutter_wallet_app/src/widgets/PageWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../ResourceUtil.dart';
 
@@ -19,7 +26,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  var _isLoadingSubject = BehaviorSubject<bool>.seeded(false);
+
+  Stream get isLoadingStream => _isLoadingSubject.stream;
 
   final FocusNode myFocusNodeEmailLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
@@ -47,9 +56,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      body: NotificationListener<OverscrollIndicatorNotification>(
+    return new PageWidget(
+      streamLoading: isLoadingStream,
+      child: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowGlow();
         },
@@ -125,6 +134,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     myFocusNodeEmail.dispose();
     myFocusNodeName.dispose();
     _pageController?.dispose();
+    _isLoadingSubject.close();
     super.dispose();
   }
 
@@ -140,19 +150,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _pageController = PageController();
   }
 
-  void showInSnackBar(String value) {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.white, fontSize: 16.0, fontFamily: "WorkSansSemiBold"),
-      ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
-    ));
-  }
+  void showInSnackBar(String value) {}
 
   Widget _buildMenuBar(BuildContext context) {
     return Container(
@@ -306,6 +304,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ),
                     ),
                     onPressed: () {
+                      login();
                       Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
                     }),
               ),
@@ -594,8 +593,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                         style: TextStyle(color: Colors.white, fontSize: 25.0, fontFamily: "WorkSansBold"),
                       ),
                     ),
-                    onPressed: (){
-                      Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
+                    onPressed: () {
+                      register();
+//                      Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
                     }),
               ),
             ],
@@ -625,5 +625,70 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     setState(() {
       _obscureTextSignupConfirm = !_obscureTextSignupConfirm;
     });
+  }
+
+  void register() async {
+    var username = signupEmailController.text.trim();
+    var password = signupPasswordController.text.trim();
+    var fullname = signupNameController.text.trim();
+    var confirmPassword = signupConfirmPasswordController.text.trim();
+//    if (username.isEmpty) {
+//      Util.showToast('Email is required!');
+//      return;
+//    }
+//    if (password.isEmpty) {
+//      Util.showToast('Password is required!');
+//      return;
+//    }
+//    if (confirmPassword.isEmpty) {
+//      Util.showToast('Confirm password is required!');
+//      return;
+//    }
+//    if (fullname.isEmpty) {
+//      Util.showToast('Fullname is required!');
+//      return;
+//    }
+//    if (password != confirmPassword) {
+//      Util.showToast('Confirm password wrong!');
+//      return;
+//    }
+    print('register');
+    Map params = new Map<String, String>();
+    params['username'] = username;
+    params['password'] =
+        ResourceUtil.hash256(username) + '|' + ResourceUtil.hash256(ResourceUtil.generateMd5(password));
+    params['fullname'] = fullname;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+//    var encryptString1 = await ResourceUtil.decryptedString
+//      ('475QrPGX6DDYVOvnyGXiKOkPYz7B5FF7rpuKT6anALp3A14C+UbHGOhkdFxeFNJ8MhL44z1C3HD8bUZROj9R80dvsHxq+zxh2qujamCyzHJxgJoNbK47tXA+HxQgC7VnhYJfEetkoAwKG+Hs2CojHws0gCYVqiG+JaXrvz7Y4ILit+XWqodUy9BTtGvah2HjRvsI+l4LD1s4KUbzg1zWPDpggDX+ONIDSeKT5w/fC+SI/jCgVNVQrS8OjueaqsdOywu0t6uPPq4qjYxsDFHDrg==');
+//    final response = await ApiService.register(encryptString);
+//    if (response.statusCode == 200) {}
+//    onLoading(false);
+  }
+
+  void login() async {
+    var username = loginEmailController.text.trim();
+    var password = loginPasswordController.text.trim();
+    if (username.isEmpty) {
+      Util.showToast('Email is required!');
+      return;
+    }
+    if (password.isEmpty) {
+      Util.showToast('Password is required!');
+      return;
+    }
+    onLoading(true);
+    print('login ');
+    Map params = new Map<String, String>();
+    params['username'] = username;
+    params['password'] = password;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.register(encryptString);
+    if (response.statusCode == 200) {}
+    onLoading(false);
+  }
+
+  onLoading(bool isLoading) {
+    _isLoadingSubject.sink.add(isLoading);
   }
 }
