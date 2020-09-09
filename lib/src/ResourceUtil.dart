@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:password/password.dart';
+import 'package:password_hash/salt.dart';
 
 class ResourceUtil {
   static final _pathResource = "assets/";
@@ -71,33 +72,6 @@ class ResourceUtil {
     return _pathResource + "icons/Login/" + name + ".png";
   }
 
-  static stringEncryption(Map data) async {
-      var salt = '31323331323331323331333132333233313331333133';
-    var key = '380dead2c94c688dafb90e2aa44844c5';
-    var hash = Password.hash(
-        'password',
-        new PBKDF2(
-          salt: salt,
-          iterationCount: 999,
-          desiredKeyLength: 32
-        ));
-
-//    final pbkdf2 = new PBKDF2KeyDerivator(new HMac(new SHA256Digest(), 64));
-//    var salt =createUint8ListFromString('a21256f98091b96af394d5a2e4ceb52f7a2270daa5eed87600b8cdbea83b1e1a');
-//    pbkdf2.init(new Pbkdf2Parameters(salt, 999, 32));
-//    pbkdf2.deriveKey(createUint8ListFromString(key), 0, B, 0);
-//    var generator = new PBKDF2();
-//    var hash = generator.generateBase64Key(key, salt, 999, 32);
-//
-    print('hash: '+hash.toString());
-    print('hash: '+'f6c6be262c4c31647b13ebdb24925be9');
-    return;
-    String encrypt = json.encode(data);
-    String iv = '12345678910@!111';
-    String encryptedString = await Cipher2.encryptAesCbc128Padding7(encrypt, key.substring(0, 16), iv);
-    return encryptedString;
-  }
-
   static Uint8List createUint8ListFromString(String s) {
     var ret = new Uint8List(s.length);
     for (var i = 0; i < s.length; i++) {
@@ -106,11 +80,39 @@ class ResourceUtil {
     return ret;
   }
 
+  static stringEncryption(Map data) async {
+    var encrypt = json.encode(data);
+    var salt = Salt.generateAsBase64String(16);
+    var iv = Salt.generateAsBase64String(16).substring(0, 16);
+    String key = hash256(generateMd5(keyPri) + '|' + salt);
+    key = key.substring(0, 16);
+    String encryptedString = await Cipher2.encryptAesCbc128Padding7(encrypt, key, iv);
+    Map output = new Map<String, String>();
+    output ['ciphertext'] = encodeBase64(encryptedString);
+    output ['iv'] = iv;
+    output ['salt'] = salt;
+    return encodeBase64(json.encode(output));
+  }
+
+  static String keyPri = '6b73412dd2037b6d2ae3b2881b5073bc'; //c
   static decryptedString(String decrypt) async {
-    String key = '380dead2c94c688dafb90e2aa44844c5'; //combination of 16 character
-    String iv = '12345678910@!111'; ////combination of 16 character
-    String decryptedString = await Cipher2.decryptAesCbc128Padding7(decrypt, key.substring(0, 16), iv);
+    decrypt = decodeBase64(decrypt);
+    var dataDecode = json.decode(decrypt);
+    var salt = dataDecode['salt'];
+    var iv = dataDecode['iv'];
+    var cipher = dataDecode['ciphertext'];
+    var cipherText = decodeBase64(cipher);
+    String key = hash256(generateMd5(keyPri) + '|' + salt);
+    String decryptedString =
+        await Cipher2.decryptAesCbc128Padding7(cipherText, key.substring(0, 16), iv.substring(0, 16));
     return json.decode(decryptedString);
+  }
+
+  static decodeBase64(String input) {
+    return utf8.decode(base64.decode(input), allowMalformed: true);
+  }
+  static encodeBase64(String input) {
+    return base64.encode(utf8.encode(input));
   }
 
   static String generateMd5(String input) {

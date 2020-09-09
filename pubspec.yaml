@@ -44,6 +44,12 @@ dependencies:
   password_hash: ^2.0.0
   pointycastle: ^1.0.2
   password: ^1.0.0
+  ff_contact_avatar: ^0.1.1
+  auro_avatar: "^0.1.0"
+  pull_to_refresh: ^1.6.1
+  snaplist: ^0.1.8
+  carousel_slider: ^2.2.1
+  intl: ^0.16.0
 
 dev_dependencies:
   flutter_test:

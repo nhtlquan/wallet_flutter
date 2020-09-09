@@ -1,13 +1,26 @@
-import 'dart:js';
+import 'dart:convert';
 
+import 'package:auro_avatar/auro_avatar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ff_contact_avatar/ff_contact_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
+import 'package:flutter_wallet_app/src/Helper/Constant.dart';
+import 'package:flutter_wallet_app/src/Model/HistoryHome.dart';
+import 'package:flutter_wallet_app/src/Model/HistoryWallet.dart';
+import 'package:flutter_wallet_app/src/Model/PitHistory.dart';
+import 'package:flutter_wallet_app/src/Util/DateTimeUtil.dart';
+import 'package:flutter_wallet_app/src/Util/Util.dart';
 import 'package:flutter_wallet_app/src/pages/pageReciveMoney.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/balance_card.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:snaplist/snaplist_view.dart';
 
+import '../ResourceUtil.dart';
 import 'buyPitMoney.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,102 +29,185 @@ class HomePage extends StatefulWidget {
 }
 
 class _State extends State<HomePage> {
-
+  double pitBalance = 0, stakeBalance = 0, businessBalance = 0;
+  RefreshController refreshController = RefreshController(initialRefresh: false);
+  List<History> listHistoryPit = new List();
+  List<HistoryWa> listHistoryStake = new List();
+  List<HistoryWa> listHistoryBusiness = new List();
+  List<HistoryHome> listHistory = new List();
+  var currentPage = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
+  }
+
+  void _onRefresh() {
+    getData();
+  }
+
+  void getData() {
+    getWalletHistories(WalletType.s);
+    getWalletHistories(WalletType.b);
+    getWallet(); // lấy thông tin ví
+    getPitHistories();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 20),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: _appBar(context),
+      child: SmartRefresher(
+        header: MaterialClassicHeader(
+          color: Constant.TEXTCOLOR_GREEN_AB,
+        ),
+        controller: refreshController,
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          child: Container(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: _appBar(context),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: TitleText(text: "My wallet"),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: false,
+                  onPageChanged: (int index, CarouselPageChangedReason reason) {
+                    currentPage = index;
+                    changeHistory();
+                  },
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                  enlargeStrategy: CenterPageEnlargeStrategy.height,
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TitleText(text: "My wallet"),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * .27,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (index, ct) {
-                      return BalanceCard();
-                    },
-                    itemCount: 3,
+                items: [
+                  BalanceCard(
+                    balance: pitBalance.toString(),
+                    name: 'PITNEX WALLET',
+                    unit: 'PIT',
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TitleText(
-                    text: "Service",
+                  BalanceCard(
+                    balance: stakeBalance.toString(),
+                    name: 'STAKE WALLET',
+                    unit: 'S.PIT',
                   ),
+                  BalanceCard(
+                    balance: businessBalance.toString(),
+                    name: 'BUSSINESS WALLET',
+                    unit: 'B.PIT',
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: TitleText(
+                  text: "Service",
                 ),
-                SizedBox(
-                  height: 10,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: _operationsWidget(context),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: TitleText(
+                  text: "Transactions",
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: _operationsWidget(context),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: TitleText(
-                    text: "Transactions",
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: _transectionList(),
-                ),
-              ],
-            )),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: _transectionList(),
+              ),
+            ],
+          )),
+        ),
       ),
     );
   }
 
   Widget _transectionList() {
-    return Column(
-      children: <Widget>[
-        _transection("Flight Ticket", "23 Feb 2020"),
-        _transection("Electricity Bill", "25 Feb 2020"),
-        _transection("Flight Ticket", "03 Mar 2020"),
-      ],
+    return Expanded(
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: listHistory.length > 10 ? 10 : listHistory.length,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            var item = listHistory[index];
+            return _transection(item.title, item.dateTime, item.amount);
+          }),
     );
+  }
+
+  changeHistory() {
+    listHistory.clear();
+    switch (currentPage) {
+      case 0:
+        for (var item in listHistoryPit) {
+          listHistory.add(new HistoryHome(
+              item.memo, '-' + item.amount + ' PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+        }
+        break;
+      case 1:
+        for (var item in listHistoryStake) {
+          listHistory.add(new HistoryHome(
+              item.note, '-' + item.money + ' S.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+        }
+        break;
+      case 2:
+        for (var item in listHistoryBusiness) {
+          listHistory.add(new HistoryHome(
+              item.note, '-' + item.money + ' B.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+        }
+        break;
+    }
+    setState(() {});
   }
 
   Widget _appBar(BuildContext context) {
     return Row(
       children: <Widget>[
-        CircleAvatar(
-          backgroundImage:
-          NetworkImage("https://static.comicvine.com/uploads/original/11133/111336417/6168632-gal_gadot.jpg"),
+        Container(
+          width: 50,
+          height: 50,
+          child: InitialNameAvatar(
+            ApiService.userProfile.data.fullname,
+            circleAvatar: true,
+            borderColor: Colors.white,
+            borderSize: 2.0,
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            padding: 10.0,
+            textSize: 18.0,
+          ),
         ),
-        SizedBox(width: 15),
-        TitleText(text: "Hello,"),
-        Text(' Janth,',
+        SizedBox(width: 5),
+        TitleText(text: "Hello, "),
+        Text(ApiService.userProfile.data.fullname,
             style: GoogleFonts.muli(fontSize: 18, fontWeight: FontWeight.w600, color: LightColor.navyBlue2)),
         Expanded(
           child: SizedBox(),
@@ -181,7 +277,7 @@ class _State extends State<HomePage> {
     );
   }
 
-  Widget _transection(String text, String time) {
+  Widget _transection(String text, String time, String amount) {
     return ListTile(
       leading: Container(
         height: 50,
@@ -193,22 +289,126 @@ class _State extends State<HomePage> {
         child: Icon(Icons.hd, color: Colors.white),
       ),
       contentPadding: EdgeInsets.symmetric(),
-      title: TitleText(
-        text: text,
-        fontSize: 14,
+      title: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+        ),
       ),
       subtitle: Text(time),
       trailing: Container(
           height: 30,
-          width: 60,
+          width: 80,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: LightColor.lightGrey,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          child: Text('-20 PIT',
+          child: Text(amount,
               style: GoogleFonts.muli(fontSize: 12, fontWeight: FontWeight.bold, color: LightColor.navyBlue2))),
     );
   }
-}
 
+  void getPitBalance() async {
+    Map params = new Map<String, String>();
+    params['wallet'] = ApiService.PIT_WALLET;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    var dryp = await ResourceUtil.decryptedString(encryptString);
+    print(dryp);
+    final response = await ApiService.getPitBalance(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      pitBalance = double.parse(data['balance']);
+      setState(() {});
+    }
+    refreshController.refreshCompleted();
+  }
+
+  void getWalletBalance(WalletType walletType) async {
+    Map params = new Map<String, String>();
+    params['wallet_type'] = walletType.toString().split('.').last;
+    params['username'] = ApiService.userProfile.data.username;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.getWalletBalance(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      if (walletType == WalletType.s)
+        stakeBalance = double.parse(data['balance']);
+      else
+        businessBalance = double.parse(data['balance']);
+      setState(() {});
+    }
+  }
+
+  void getPitHistories() async {
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.getPitHistories(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      PitHistory pitHistory = PitHistory.fromJson(data);
+      listHistoryPit = pitHistory.data;
+      changeHistory();
+    }
+  }
+
+  void getWalletHistories(WalletType walletType) async {
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    params['wallet_type'] = walletType.toString().split('.').last;
+    print(walletType.toString().split('.').last);
+    params['page'] = '1';
+    params['wallet'] = ApiService.PIT_WALLET;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.getWalletHistories(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      HistoryWallet pitHistory = HistoryWallet.fromJson(data);
+      if (walletType == WalletType.s)
+        listHistoryStake = pitHistory.data;
+      else
+        listHistoryBusiness = pitHistory.data;
+    }
+  }
+
+  void confirm2FA() async {
+    Map params = new Map<String, String>();
+    params['gsecret'] = ApiService.userProfile.data.gsecret;
+    params['code2fa'] = '088164';
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.confirm2FA(encryptString);
+    if (response.statusCode == 200) {}
+  }
+
+  void googleAuthenUrl() async {
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    params['gsecret'] = ApiService.userProfile.data.gsecret;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    var dryp = await ResourceUtil.decryptedString(encryptString);
+    print(dryp);
+    final response = await ApiService.googleAuthenUrl(encryptString);
+    if (response.statusCode == 200) {}
+  }
+
+  void getWallet() async {
+    // lấy thông tin ví
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.getWallet(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      if (data['status'] == 'no') {
+        Util.showToast(data['mess']);
+      } else {
+        ApiService.PIT_WALLET = data['wallet'];
+        getPitBalance();
+      }
+    }
+  }
+}

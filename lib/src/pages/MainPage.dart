@@ -12,28 +12,26 @@ import 'package:flutter_wallet_app/src/theme/theme.dart';
 import 'package:flutter_wallet_app/src/widgets/balance_card.dart';
 import 'package:flutter_wallet_app/src/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import '../ResourceUtil.dart';
+import 'HomePage.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+class MainPage extends StatefulWidget {
+  MainPage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<MainPage> {
   int _page = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getPitBalance();
-    getWalletBalance(WalletType.b);
-    getWalletBalance(WalletType.s);
+
   }
 
   @override
@@ -103,37 +101,4 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void getPitBalance() async {
-    Map params = new Map<String, String>();
-    params['wallet'] = ApiService.PIT_WALLET;
-    var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.getPitBalance(encryptString);
-    if (response.statusCode == 200) {}
-  }
-
-  void getWalletBalance(WalletType walletType) async {
-    Map params = new Map<String, String>();
-    params['wallet_type'] = walletType.toString();
-    params['username'] = ApiService.USER_NAME;
-    var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.getWalletBalance(encryptString);
-    if (response.statusCode == 200) {}
-  }
-
-  void getPitHistories() async {
-    Map params = new Map<String, String>();
-    params['username'] = ApiService.USER_NAME;
-    var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.getPitHistories(encryptString);
-    if (response.statusCode == 200) {}
-  }
-
-  void getWalletHistories(WalletType walletType) async {
-    Map params = new Map<String, String>();
-    params['username'] = ApiService.USER_NAME;
-    params['wallet_type'] = walletType.toString();
-    var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.getWalletHistories(encryptString);
-    if (response.statusCode == 200) {}
-  }
 }

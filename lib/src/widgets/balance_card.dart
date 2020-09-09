@@ -3,16 +3,20 @@ import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BalanceCard extends StatelessWidget {
-  const BalanceCard({Key key}) : super(key: key);
+  String name;
+  String balance;
+  String unit;
+
+  BalanceCard({Key key, this.name, this.balance, this.unit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 20),
+      padding: EdgeInsets.only(left: 10, right: 10),
       child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(40)),
           child: Container(
-            width: MediaQuery.of(context).size.width-60,
+            width: MediaQuery.of(context).size.width - 60,
             height: MediaQuery.of(context).size.height * .27,
             color: LightColor.navyBlue1,
             child: Stack(
@@ -23,18 +27,15 @@ class BalanceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'PITNEX WALLET',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: LightColor.lightNavyBlue),
+                      name,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: LightColor.lightNavyBlue),
                     ),
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '6,354',
+                          balance,
                           style: GoogleFonts.muli(
                               textStyle: Theme.of(context).textTheme.display1,
                               fontSize: 35,
@@ -42,41 +43,22 @@ class BalanceCard extends StatelessWidget {
                               color: LightColor.yellow2),
                         ),
                         Text(
-                          ' PIT',
+                          ' ' + unit,
                           style: TextStyle(
-                              fontSize: 35,
-                              fontWeight: FontWeight.w500,
-                              color: LightColor.yellow.withAlpha(200)),
+                              fontSize: 35, fontWeight: FontWeight.w500, color: LightColor.yellow.withAlpha(200)),
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Eq:',
-                          style: GoogleFonts.muli(
-                              textStyle: Theme.of(context).textTheme.display1,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: LightColor.lightNavyBlue),
-                        ),
-                        Text(
-                          ' \$10,000',
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        ),
-                      ],
+                    Text(
+                      ' Your balance',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Container(
                         width: 85,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
                             border: Border.all(color: Colors.white, width: 1)),
@@ -89,8 +71,7 @@ class BalanceCard extends StatelessWidget {
                               size: 20,
                             ),
                             SizedBox(width: 5),
-                            Text("Top up",
-                                style: TextStyle(color: Colors.white)),
+                            Text("Top up", style: TextStyle(color: Colors.white)),
                           ],
                         ))
                   ],

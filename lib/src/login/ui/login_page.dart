@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
+import 'package:flutter_wallet_app/src/Model/UserProfile.dart';
 import 'package:flutter_wallet_app/src/Util/Util.dart';
 import 'package:flutter_wallet_app/src/login/forgot2FA.dart';
 import 'package:flutter_wallet_app/src/login/forgotPass.dart';
 import 'package:flutter_wallet_app/src/login/style/theme.dart' as Theme;
 import 'package:flutter_wallet_app/src/login/utils/bubble_indication_painter.dart';
+import 'package:flutter_wallet_app/src/pages/HomePage.dart';
 import 'package:flutter_wallet_app/src/pages/MainPage.dart';
 import 'package:flutter_wallet_app/src/widgets/PageWidget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -37,8 +39,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   final FocusNode myFocusNodeEmail = FocusNode();
   final FocusNode myFocusNodeName = FocusNode();
 
-  TextEditingController loginEmailController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
+  TextEditingController loginEmailController = new TextEditingController(text: 'dungbinance@gmail.com');
+  TextEditingController loginPasswordController = new TextEditingController(text: '123456');
 
   bool _obscureTextLogin = true;
   bool _obscureTextSignup = true;
@@ -305,7 +307,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                     onPressed: () {
                       login();
-                      Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
+//                      Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
                     }),
               ),
             ],
@@ -595,7 +597,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                     onPressed: () {
                       register();
-//                      Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
+//
                     }),
               ),
             ],
@@ -614,11 +616,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   }
 
   void _toggleLogin() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
+//    Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
   }
 
   void _toggleSignup() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
+//    Navigator.push(context, CupertinoPageRoute(builder: (context) => HomePage()));
   }
 
   void _toggleSignupConfirm() {
@@ -632,38 +634,46 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     var password = signupPasswordController.text.trim();
     var fullname = signupNameController.text.trim();
     var confirmPassword = signupConfirmPasswordController.text.trim();
-//    if (username.isEmpty) {
-//      Util.showToast('Email is required!');
-//      return;
-//    }
-//    if (password.isEmpty) {
-//      Util.showToast('Password is required!');
-//      return;
-//    }
+    if (username.isEmpty) {
+      Util.showToast('Email is required!');
+      return;
+    }
+    if (password.isEmpty) {
+      Util.showToast('Password is required!');
+      return;
+    }
 //    if (confirmPassword.isEmpty) {
 //      Util.showToast('Confirm password is required!');
 //      return;
 //    }
-//    if (fullname.isEmpty) {
-//      Util.showToast('Fullname is required!');
-//      return;
-//    }
+    if (fullname.isEmpty) {
+      Util.showToast('Fullname is required!');
+      return;
+    }
 //    if (password != confirmPassword) {
 //      Util.showToast('Confirm password wrong!');
 //      return;
 //    }
+    onLoading(true);
     print('register');
     Map params = new Map<String, String>();
     params['username'] = username;
     params['password'] =
         ResourceUtil.hash256(username) + '|' + ResourceUtil.hash256(ResourceUtil.generateMd5(password));
     params['fullname'] = fullname;
+    params['par_user'] = '';
     var encryptString = await ResourceUtil.stringEncryption(params);
-//    var encryptString1 = await ResourceUtil.decryptedString
-//      ('475QrPGX6DDYVOvnyGXiKOkPYz7B5FF7rpuKT6anALp3A14C+UbHGOhkdFxeFNJ8MhL44z1C3HD8bUZROj9R80dvsHxq+zxh2qujamCyzHJxgJoNbK47tXA+HxQgC7VnhYJfEetkoAwKG+Hs2CojHws0gCYVqiG+JaXrvz7Y4ILit+XWqodUy9BTtGvah2HjRvsI+l4LD1s4KUbzg1zWPDpggDX+ONIDSeKT5w/fC+SI/jCgVNVQrS8OjueaqsdOywu0t6uPPq4qjYxsDFHDrg==');
-//    final response = await ApiService.register(encryptString);
-//    if (response.statusCode == 200) {}
-//    onLoading(false);
+    final response = await ApiService.register(encryptString);
+    onLoading(false);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      if(data['status']=='no'){
+        Util.showToast(data['mess']);
+      } else {
+        Util.showToast('Register success');
+        _onSignInButtonPress();
+      }
+    }
   }
 
   void login() async {
@@ -681,11 +691,23 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     print('login ');
     Map params = new Map<String, String>();
     params['username'] = username;
-    params['password'] = password;
+    params['password'] =
+        ResourceUtil.hash256(username) + '|' + ResourceUtil.hash256(ResourceUtil.generateMd5(password));
     var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.register(encryptString);
-    if (response.statusCode == 200) {}
+
+    final response = await ApiService.login(encryptString);
     onLoading(false);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      if(data['status']=='no'){
+        Util.showToast(data['mess']);
+      } else {
+        Util.showToast('Login success');
+       ApiService.userProfile = UserProfile.fromJson( json.decode(response.data));
+        Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => MainPage()));
+      }
+    }
+
   }
 
   onLoading(bool isLoading) {

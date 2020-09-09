@@ -4,6 +4,7 @@ import 'package:flutter_wallet_app/src/login/forgot2FA.dart';
 import 'package:flutter_wallet_app/src/login/forgotPass.dart';
 import 'package:flutter_wallet_app/src/login/kycPage.dart';
 import 'package:flutter_wallet_app/src/login/ui/login_page.dart';
+import 'package:flutter_wallet_app/src/pages/HomePage.dart';
 import 'package:flutter_wallet_app/src/pages/updateProfile.dart';
 import 'package:flutter_wallet_app/src/theme/theme.dart';
 import 'package:google_fonts/google_fonts.dart';

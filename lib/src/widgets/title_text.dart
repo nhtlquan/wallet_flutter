@@ -6,11 +6,13 @@ class TitleText extends StatelessWidget {
   final String text;
   final double fontSize;
   final Color color;
+  final int line ;
   final FontWeight fontWeight;
 
   const TitleText(
       {Key key,
       this.text,
+      this.line = 99,
       this.fontSize = 18,
         this.fontWeight = FontWeight.w800,
       this.color = LightColor.navyBlue2})
@@ -19,6 +21,7 @@ class TitleText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Text(text,
+          maxLines: line,
           style: GoogleFonts.muli(
               fontSize: fontSize, fontWeight: fontWeight, color: color)),
     );

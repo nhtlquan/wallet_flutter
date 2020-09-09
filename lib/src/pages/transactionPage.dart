@@ -1,5 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
+import 'package:flutter_wallet_app/src/Model/HistoryHome.dart';
+import 'package:flutter_wallet_app/src/Model/HistoryWallet.dart';
+import 'package:flutter_wallet_app/src/Model/PitHistory.dart';
+import 'package:flutter_wallet_app/src/Util/DateTimeUtil.dart';
+import 'package:flutter_wallet_app/src/Util/Util.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 
@@ -12,6 +20,27 @@ class TransactionPage extends StatefulWidget {
 
 class _TransactionPageState extends State<TransactionPage> {
   var currentIndex = 0;
+  List<History> listHistoryPit = new List();
+  List<HistoryWa> listHistoryStake = new List();
+  List<HistoryWa> listHistoryBusiness = new List();
+  List<HistoryHome> listHistory = new List();
+  var currentPage = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  void _onRefresh() {
+    getData();
+  }
+
+  void getData() {
+    getWalletHistories(WalletType.s);
+    getWalletHistories(WalletType.b);
+    getPitHistories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,13 +115,37 @@ class _TransactionPageState extends State<TransactionPage> {
                 itemBuilder: (ct, index) {
                   return itemTransaction(index);
                 },
-                itemCount: 20,
+                itemCount: listHistory.length,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+  changeHistory() {
+    listHistory.clear();
+    switch (currentPage) {
+      case 0:
+        for (var item in listHistoryPit) {
+          listHistory.add(new HistoryHome(
+              item.memo, '-' + item.amount + ' PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+        }
+        break;
+      case 1:
+        for (var item in listHistoryStake) {
+          listHistory.add(new HistoryHome(
+              item.note, '-' + item.money + ' S.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+        }
+        break;
+      case 2:
+        for (var item in listHistoryBusiness) {
+          listHistory.add(new HistoryHome(
+              item.note, '-' + item.money + ' B.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+        }
+        break;
+    }
+    setState(() {});
   }
 
   Widget itemTransaction(int index) {
@@ -110,15 +163,15 @@ class _TransactionPageState extends State<TransactionPage> {
               padding: EdgeInsets.all(5),
               child: !checkBackground
                   ? Icon(
-                      Icons.arrow_downward,
-                      color: Colors.green,
-                      size: 24,
-                    )
+                Icons.arrow_downward,
+                color: Colors.green,
+                size: 24,
+              )
                   : Icon(
-                      Icons.arrow_upward,
-                      color: Colors.red,
-                      size: 24,
-                    ),
+                Icons.arrow_upward,
+                color: Colors.red,
+                size: 24,
+              ),
             ),
           ),
 //          SvgPicture.asset(
@@ -210,4 +263,41 @@ class _TransactionPageState extends State<TransactionPage> {
       ),
     );
   }
-}
+
+  void getPitHistories() async {
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.getPitHistories(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      PitHistory pitHistory = PitHistory.fromJson(data);
+      listHistoryPit = pitHistory.data;
+//      changeHistory();
+    }
+  }
+
+  void getWalletHistories(WalletType walletType) async {
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    params['wallet_type'] = walletType
+        .toString()
+        .split('.')
+        .last;
+    print(walletType
+        .toString()
+        .split('.')
+        .last);
+    params['page'] = '1';
+    params['wallet'] = ApiService.PIT_WALLET;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.getWalletHistories(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      HistoryWallet pitHistory = HistoryWallet.fromJson(data);
+      if (walletType == WalletType.s)
+        listHistoryStake = pitHistory.data;
+      else
+        listHistoryBusiness = pitHistory.data;
+    }
+  }
