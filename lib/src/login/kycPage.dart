@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
 import 'package:flutter_wallet_app/src/Helper/ChooseImageHelper.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
@@ -17,6 +18,7 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(ApiService.userProfile.data.kyc1);
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
         body: Container(
@@ -69,45 +71,49 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
                             SizedBox(
                               height: 20,
                             ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Stack(
-                                children: [
-                                  Image.network(
-                                    'https://pitnex.com/images/uploads/dungbinance/210DA86E-ED88-4B2D-8F55-46B6B92D6420'
-                                    '.jpeg',
-                                    height: 300,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 300,
-                                    color: Colors.black.withOpacity(0.4),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.cloud_upload,
-                                            color: Colors.white,
-                                            size: 60,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          TitleText(
-                                            text: 'Choose File',
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                          )
-                                        ],
+                            InkWell(
+                              onTap: () {
+                                _showChooseImageAvatar('kyc1');
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Stack(
+                                  children: [
+                                    Image.network(
+                                      ApiService.BASE_URL + ApiService.userProfile.data.kyc1,
+                                      height: 300,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 300,
+                                      color: Colors.black.withOpacity(0.4),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.cloud_upload,
+                                              color: Colors.white,
+                                              size: 60,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            TitleText(
+                                              text: 'Choose File',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                             Container(
@@ -137,14 +143,14 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
                               child: Stack(
                                 children: [
                                   Image.network(
-                                    'https://pitnex.com/images/uploads/dungbinance/102930836_3419049748108271_1646925069579976704_n.jpg',
+                                    ApiService.BASE_URL + ApiService.userProfile.data.kyc2,
                                     width: double.infinity,
                                     height: 300,
                                     fit: BoxFit.cover,
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      _showChooseImageAvatar();
+                                      _showChooseImageAvatar('kyc2');
                                     },
                                     child: Container(
                                       width: double.infinity,
@@ -210,12 +216,14 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
         ));
   }
 
-  void _showChooseImageAvatar() {
+  void _showChooseImageAvatar(String kycName) {
     var choose = new ChooseImageHelper(context: this.context, isCrop: true);
     choose.title = "Choose your KYC image";
     choose.onShowLoading = () {};
     choose.onHideLoading = () {};
-    choose.onChooseImage = (File file) {};
+    choose.onChooseImage = (File file) {
+      var response = ApiService.uploadFile(file, kycName);
+    };
     choose.show();
   }
 }

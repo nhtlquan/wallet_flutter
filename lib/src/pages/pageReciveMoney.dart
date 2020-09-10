@@ -1,8 +1,11 @@
+import 'package:auro_avatar/auro_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../ResourceUtil.dart';
 
@@ -71,7 +74,7 @@ class _ReceiveMoneyPageState extends State<ReceiveMoneyPage> {
                                       height: 10,
                                     ),
                                     Text(
-                                      'p23de2c34a34',
+                                      ApiService.PIT_WALLET,
                                       style: TextStyle(fontSize: 18,color: Colors.grey, fontStyle: FontStyle.italic),
                                     ),
                                     SizedBox(
@@ -79,13 +82,10 @@ class _ReceiveMoneyPageState extends State<ReceiveMoneyPage> {
                                     ),
                                     Stack(
                                       children: [
-                                        Center(
-                                          child: SvgPicture.asset(
-                                            ResourceUtil.icon('ic_qrcode_image.svg'),
-                                            width: 250,
-                                            height: 250,
-                                            color: Colors.black.withOpacity(0.8),
-                                          ),
+                                        QrImage(
+                                          data: ApiService.PIT_WALLET,
+                                          version: QrVersions.auto,
+                                          size: 250.0,
                                         ),
 //                                        Center(
 //                                          child: Container(
@@ -137,15 +137,18 @@ class _ReceiveMoneyPageState extends State<ReceiveMoneyPage> {
                         ),
                         Center(
                           child: Container(
-                            height: 100,
                             width: 100,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        "https://static.comicvine.com/uploads/original/11133/111336417/6168632-gal_gadot.jpg"),
-                                    fit: BoxFit.cover),
-                                border: Border.all(color: Colors.blueAccent, width: 5),
-                                borderRadius: BorderRadius.all(Radius.circular(50))),
+                            height: 100,
+                            child: InitialNameAvatar(
+                              ApiService.userProfile.data.fullname,
+                              circleAvatar: true,
+                              borderColor: Colors.white,
+                              borderSize: 2.0,
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              padding: 10.0,
+                              textSize: 26.0,
+                            ),
                           ),
                         ),
                       ],

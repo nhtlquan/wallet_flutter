@@ -24,14 +24,27 @@ class MainPage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<MainPage> {
+class _HomePageState extends State<MainPage> with SingleTickerProviderStateMixin {
   int _page = 0;
+  PageController pageController;
+  TabController tabController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    tabController = TabController(length: 4, vsync: this, initialIndex: 0)
+      ..addListener(() {
+        setState(() {
+          _page = tabController.index;
+        });
+      });
+    pageController = PageController(initialPage: 0)
+      ..addListener(() {
+        setState(() {
+          _page = pageController.page.floor();
+        });
+      });
   }
 
   @override
@@ -75,30 +88,22 @@ class _HomePageState extends State<MainPage> {
               onTabChange: (index) {
                 setState(() {
                   _page = index;
+                  tabController.animateTo(index, duration: Duration(microseconds: 300), curve: Curves.bounceIn);
                 });
               }),
         ),
       ),
-      body: getBody(),
-    );
-  }
-
-  getBody() {
-    switch (_page) {
-      case 0:
-        return HomePage();
-      case 1:
-        return TransactionPage();
-      case 2:
-        return Container(
+      body: TabBarView(controller: tabController, children: [
+        HomePage(),
+        TransactionPage(),
+        Container(
           child: Center(
               child: TitleText(
             text: 'Coming soon',
           )),
-        );
-      case 3:
-        return ProfilePage();
-    }
+        ),
+        ProfilePage()
+      ]),
+    );
   }
-
 }

@@ -22,13 +22,16 @@ import 'package:snaplist/snaplist_view.dart';
 
 import '../ResourceUtil.dart';
 import 'buyPitMoney.dart';
+import 'money_transfer_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _State createState() => _State();
 }
 
-class _State extends State<HomePage> {
+class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   double pitBalance = 0, stakeBalance = 0, businessBalance = 0;
   RefreshController refreshController = RefreshController(initialRefresh: false);
   List<History> listHistoryPit = new List();
@@ -52,6 +55,9 @@ class _State extends State<HomePage> {
     getWalletHistories(WalletType.s);
     getWalletHistories(WalletType.b);
     getWallet(); // lấy thông tin ví
+    getWalletBalance(WalletType.s); // lấy thông tin ví
+    getWalletBalance(WalletType.b); // lấy thông tin ví
+    getWallet(); // lấy thông tin ví
     getPitHistories();
   }
 
@@ -66,101 +72,100 @@ class _State extends State<HomePage> {
         onRefresh: _onRefresh,
         child: SingleChildScrollView(
           child: Container(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: _appBar(context),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TitleText(text: "My wallet"),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              CarouselSlider(
-                options: CarouselOptions(
-                  autoPlay: false,
-                  onPageChanged: (int index, CarouselPageChangedReason reason) {
-                    currentPage = index;
-                    changeHistory();
-                  },
-                  aspectRatio: 2.0,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: false,
-                  enlargeStrategy: CenterPageEnlargeStrategy.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 20),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: _appBar(context),
                 ),
-                items: [
-                  BalanceCard(
-                    balance: pitBalance.toString(),
-                    name: 'PITNEX WALLET',
-                    unit: 'PIT',
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TitleText(text: "My wallet"),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CarouselSlider(
+                  options: CarouselOptions(
+                    autoPlay: false,
+                    onPageChanged: (int index, CarouselPageChangedReason reason) {
+                      currentPage = index;
+                      changeHistory();
+                    },
+                    aspectRatio: 2.0,
+                    enlargeCenterPage: true,
+                    enableInfiniteScroll: false,
+                    enlargeStrategy: CenterPageEnlargeStrategy.height,
                   ),
-                  BalanceCard(
-                    balance: stakeBalance.toString(),
-                    name: 'STAKE WALLET',
-                    unit: 'S.PIT',
+                  items: [
+                    BalanceCard(
+                      balance: pitBalance.toString(),
+                      name: 'PITNEX WALLET',
+                      unit: 'PIT',
+                    ),
+                    BalanceCard(
+                      balance: stakeBalance.toString(),
+                      name: 'STAKE WALLET',
+                      unit: 'S.PIT',
+                    ),
+                    BalanceCard(
+                      balance: businessBalance.toString(),
+                      name: 'BUSSINESS WALLET',
+                      unit: 'B.PIT',
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TitleText(
+                    text: "Service",
                   ),
-                  BalanceCard(
-                    balance: businessBalance.toString(),
-                    name: 'BUSSINESS WALLET',
-                    unit: 'B.PIT',
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TitleText(
-                  text: "Service",
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: _operationsWidget(context),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TitleText(
-                  text: "Transactions",
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: _transectionList(),
-              ),
-            ],
-          )),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: _operationsWidget(context),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: TitleText(
+                    text: "Transactions",
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: _transectionList(),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _transectionList() {
-    return Expanded(
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: listHistory.length > 10 ? 10 : listHistory.length,
-          physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            var item = listHistory[index];
-            return _transection(item.title, item.dateTime, item.amount);
-          }),
-    );
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: listHistory.length > 10 ? 10 : listHistory.length,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          var item = listHistory[index];
+          return _transection(item.title, item.dateTime, item.amount);
+        });
   }
 
   changeHistory() {
@@ -168,20 +173,23 @@ class _State extends State<HomePage> {
     switch (currentPage) {
       case 0:
         for (var item in listHistoryPit) {
-          listHistory.add(new HistoryHome(
-              item.memo, '-' + item.amount + ' PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+          var money = item.type == Type.TRAN_RECEIVED ? '+' + item.amount : '-' + item.amount;
+          listHistory
+              .add(new HistoryHome(item.memo, '$money PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
         }
         break;
       case 1:
         for (var item in listHistoryStake) {
-          listHistory.add(new HistoryHome(
-              item.note, '-' + item.money + ' S.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+          var money = item.type == '1' ? '+' + item.money : item.money;
+          listHistory
+              .add(new HistoryHome(item.note, '$money S.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
         }
         break;
       case 2:
         for (var item in listHistoryBusiness) {
-          listHistory.add(new HistoryHome(
-              item.note, '-' + item.money + ' B.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
+          var money = item.type == '1' ? '+' + item.money : item.money;
+          listHistory
+              .add(new HistoryHome(item.note, '$money B.PIT', DateTimeUtil.getDateTimeStamp(int.parse(item.cdate))));
         }
         break;
     }
@@ -226,7 +234,7 @@ class _State extends State<HomePage> {
       children: <Widget>[
         InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/transfer');
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => MoneyTransferPage()));
             },
             child: _icon(Icons.send, "Send", context)),
         InkWell(

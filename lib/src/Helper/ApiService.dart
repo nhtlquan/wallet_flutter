@@ -137,6 +137,7 @@ class ApiService {
     params['data'] = data;
     return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
   }
+
   //SendPit
   static Future<Response> confirm2FA(String data) {
     final action = "confirm2fa";
@@ -144,5 +145,12 @@ class ApiService {
     var params = Map<String, String>();
     params['data'] = data;
     return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
+  }
+
+  //updateFile
+  static Future<Response> uploadFile(File file, String kycname) {
+    final action = "KYC";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    return HttpHelper.uploadImage(url, file, kycname);
   }
 }

@@ -1,6 +1,9 @@
+import 'package:auro_avatar/auro_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
 import 'package:flutter_wallet_app/src/ResourceUtil.dart';
+import 'package:flutter_wallet_app/src/Util/DateTimeUtil.dart';
 import 'package:flutter_wallet_app/src/login/2faPage.dart';
 import 'package:flutter_wallet_app/src/login/changePassword.dart';
 import 'package:flutter_wallet_app/src/login/kycPage.dart';
@@ -15,7 +18,10 @@ class ProfilePage extends StatefulWidget {
 
 //SELL Account 8710 CP, Phanmasta, Hexe, Alts Full Jin, Trade with MiddleMan service, Pm more info, Discord:
 // NhtlQuan#0335
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -77,30 +83,31 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Column(
                           children: [
-                            Center(
-                              child: Container(
-                                height: 100,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            "https://static.comicvine.com/uploads/original/11133/111336417/6168632-gal_gadot.jpg"),
-                                        fit: BoxFit.cover),
-                                    border: Border.all(color: Colors.white, width: 5),
-                                    borderRadius: BorderRadius.all(Radius.circular(50))),
+                            Container(
+                              width: 100,
+                              height: 100,
+                              child: InitialNameAvatar(
+                                ApiService.userProfile.data.fullname,
+                                circleAvatar: true,
+                                borderColor: Colors.white,
+                                borderSize: 2.0,
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                padding: 10.0,
+                                textSize: 31.0,
                               ),
                             ),
                             SizedBox(
                               height: 5,
                             ),
                             TitleText(
-                              text: "Nguyễn Văn Dũng",
+                              text: ApiService.userProfile.data.fullname,
                               color: Colors.black87,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
                             TitleText(
-                              text: "p23de2c34a34",
+                              text: ApiService.PIT_WALLET,
                               color: Colors.grey,
                               fontWeight: FontWeight.normal,
                               fontSize: 12,
@@ -186,10 +193,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
-                              itemDetail('Username', 'dungbinance@gmail.com', Icons.person, Colors.blue),
-                              itemDetail('ParUser', 'info.lamgiau@gmail.com', Icons.link, Colors.yellow),
-                              itemDetail('Join date', '20 thg 5, 2020', Icons.date_range, Colors.pink),
-                              itemDetail('Active', 'Enable', Icons.compare, Colors.green),
+                              itemDetail('Username', ApiService.userProfile.data.username, Icons.person, Colors.blue),
+                              itemDetail(
+                                  'ParUser', ApiService.userProfile.data.parUser ?? '', Icons.link, Colors.yellow),
+                              itemDetail(
+                                  'Join date',
+                                  DateTimeUtil.getDateTimeStamp(int.parse(ApiService.userProfile.data.cdate ?? '0')),
+                                  Icons.date_range,
+                                  Colors.pink),
+                              itemDetail('Active', ApiService.userProfile.data.isactive == '1' ? "Enable" : 'Disable',
+                                  Icons.compare, Colors.green),
                             ],
                           ),
                         ),

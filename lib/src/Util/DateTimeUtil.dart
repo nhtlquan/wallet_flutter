@@ -59,6 +59,8 @@ class DateTimeUtil {
   }
 
   static String getDateTimeStamp(int time) {
+    if(time ==0)
+      return '';
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(time * 1000);
     return dateTimeToString(dateTime, "dd/MM/yyyy");
   }

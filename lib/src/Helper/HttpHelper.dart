@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/dio.dart' as dioLib;
+import 'package:flutter_wallet_app/src/ResourceUtil.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as path;
 
@@ -180,8 +181,11 @@ class HttpHelper {
     return response;
   }
 
-  static Future<dioLib.Response> uploadImage(String url, dynamic file, bool auth,
-      {VoidOnCallBackUpload onCallBackUpload, String fileName}) async {
+  static Future<dioLib.Response> uploadImage(
+    String url,
+    File file,
+    String kycname,
+  ) async {
     dioLib.Response response;
     try {
       var dio = new dioLib.Dio();
@@ -192,11 +196,6 @@ class HttpHelper {
         request: true,
       ));
       var headers = Map<String, String>();
-      if (auth) {
-        var token = ApiService.ACCESS_TOKEN;
-        var userID = ApiService.USER_ID;
-        headers["Authorization"] = token; //ApiServic
-      }
 
       dioLib.Options options;
 
@@ -209,29 +208,22 @@ class HttpHelper {
       );
       options.contentType = Headers.jsonContentType;
       FormData data;
-      print(fileName);
-      if (file is File)
-        data = FormData.fromMap({
-          "file": await MultipartFile.fromFile(
-            file.path,
-            filename: path.basename(file.path),
-          ),
-        });
-      else
-        data = FormData.fromMap({
-          "file": MultipartFile.fromBytes(
-            file,
-            filename: fileName,
-          ),
-        });
+      data = FormData.fromMap({
+        "txt_file": await MultipartFile.fromFile(
+          file.path,
+          filename: path.basename(file.path),
+        ),
+        'kycname': kycname,
+        'username': ApiService.userProfile.data.username,
+        'apikey': ResourceUtil.keyPri,
+      });
+      print(data.fields);
       try {
         response = await dio.post(
           url,
           data: data,
           onSendProgress: (int sent, int total) {
             print("$sent $total");
-
-            if (onCallBackUpload != null) onCallBackUpload(total, sent);
           },
           options: options,
         );
