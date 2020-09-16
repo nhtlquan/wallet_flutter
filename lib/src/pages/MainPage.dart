@@ -1,20 +1,11 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
-import 'package:flutter_wallet_app/src/Util/Util.dart';
-import 'package:flutter_wallet_app/src/pages/buyPitMoney.dart';
-import 'package:flutter_wallet_app/src/pages/pageReciveMoney.dart';
 import 'package:flutter_wallet_app/src/pages/profilePage.dart';
 import 'package:flutter_wallet_app/src/pages/transactionPage.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
-import 'package:flutter_wallet_app/src/theme/theme.dart';
-import 'package:flutter_wallet_app/src/widgets/balance_card.dart';
-import 'package:flutter_wallet_app/src/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-import '../ResourceUtil.dart';
 import 'HomePage.dart';
 
 class MainPage extends StatefulWidget {

@@ -47,10 +47,10 @@ class ApiService {
 
   //SEND payment
   static Future<Response> sendPayment(String paymentData) {
-    final action = "paymentQR";
+    final action = "Send";
     final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
     var params = Map<String, String>();
-    params["payment_data"] = paymentData;
+    params["data"] = paymentData;
     return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
   }
 

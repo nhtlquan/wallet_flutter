@@ -25,7 +25,7 @@ class MoneyTransferPage extends StatefulWidget {
 class _MoneyTransferPageState extends State<MoneyTransferPage> {
   var pitBalance = 0.0;
   var amount = 0.0;
-  final _rate = 2350;
+  final _rate = 23500;
   final _euroController = TextEditingController();
   final _noteController = TextEditingController();
   final recipientController = TextEditingController();
@@ -319,6 +319,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                                   decoration: InputDecoration(
                                       border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.all(10)),
                                   textAlign: TextAlign.left,
+                                  maxLines: 5,
                                   controller: _noteController,
                                   keyboardType: TextInputType.text,
                                   textInputAction: TextInputAction.search,
@@ -455,13 +456,16 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     params['fwallet'] = ApiService.PIT_WALLET;
     params['twallet'] = recipient;
     params['amount'] = amount;
-    params['note'] = note;
+    params['note'] = 'note';
     onLoading(true);
+    print(params);
     var encryptString = await ResourceUtil.stringEncryption(params);
     final response = await ApiService.sendPayment(encryptString);
     onLoading(false);
     if (response.statusCode == 200) {
-      var data = json.decode(response.data);
+      Util.showToast('Transaction success to $recipient');
+    } else {
+      Util.showToast('Transaction fail');
     }
   }
 

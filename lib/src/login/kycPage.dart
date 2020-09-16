@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
 import 'package:flutter_wallet_app/src/Helper/ChooseImageHelper.dart';
+import 'package:flutter_wallet_app/src/Util/Util.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
@@ -216,13 +219,26 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
         ));
   }
 
-  void _showChooseImageAvatar(String kycName) {
+  void _showChooseImageAvatar(String kycName)  {
     var choose = new ChooseImageHelper(context: this.context, isCrop: true);
     choose.title = "Choose your KYC image";
     choose.onShowLoading = () {};
     choose.onHideLoading = () {};
-    choose.onChooseImage = (File file) {
-      var response = ApiService.uploadFile(file, kycName);
+    choose.onChooseImage = (File file)  async{
+      var response =await ApiService.uploadFile(file, kycName);
+      if (response.statusCode == 200) {
+        var data = json.decode(response.data);
+        if(kycName == 'kyc1')
+          ApiService.userProfile.data.kyc1 = data['kyc1'];
+        else
+          ApiService.userProfile.data.kyc2 = data['kyc2'];
+        setState(() {
+
+        });
+      } else {
+        Util.showToast('Upload fail');
+      }
+
     };
     choose.show();
   }

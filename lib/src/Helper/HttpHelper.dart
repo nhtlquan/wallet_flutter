@@ -212,9 +212,10 @@ class HttpHelper {
         "txt_file": await MultipartFile.fromFile(
           file.path,
           filename: path.basename(file.path),
+          contentType: MediaType.parse('image/jpeg')
         ),
         'kycname': kycname,
-        'username': ApiService.userProfile.data.username,
+        'user': ApiService.userProfile.data.username,
         'apikey': ResourceUtil.keyPri,
       });
       print(data.fields);

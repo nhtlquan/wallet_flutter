@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cipher2/cipher2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
 import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
@@ -14,12 +17,13 @@ class TwoFactorAuthenticationPage extends StatefulWidget {
 
 class _TwoFactorAuthenticationPageState extends State<TwoFactorAuthenticationPage> {
   var enable2FA = true;
+  var urlGoogleAuthen = '';
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();test();
-
+    super.initState();
+    googleAuthenUrl();
   }
 
   @override
@@ -97,11 +101,11 @@ class _TwoFactorAuthenticationPageState extends State<TwoFactorAuthenticationPag
                                       height: 40,
                                     ),
                                     Center(
-                                      child: SvgPicture.asset(
-                                        ResourceUtil.icon('ic_qrcode_image.svg'),
-                                        width: 250,
+                                      child: Image.network(
+                                       urlGoogleAuthen,
                                         height: 250,
-                                        color: Colors.black.withOpacity(0.8),
+                                        width: 250,
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
                                     SizedBox(
@@ -132,19 +136,21 @@ class _TwoFactorAuthenticationPageState extends State<TwoFactorAuthenticationPag
         ));
   }
 
-  String plainText = 'Quan Dung';
-  String key = '1245714587458745'; //combination of 16 character
-  String iv = 'e16ce913a20dadb8';
+  void googleAuthenUrl() async {
+    Map params = new Map<String, String>();
+    params['username'] = ApiService.userProfile.data.username;
+    params['gsecret'] = ApiService.userProfile.data.gsecret;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    var dryp = await ResourceUtil.decryptedString(encryptString);
+    print(dryp);
+    final response = await ApiService.googleAuthenUrl(encryptString);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
 
-  test() async {
-    String encryptedString = await Cipher2.encryptAesCbc128Padding7(plainText, key, iv);
-    print(encryptedString);
-    decrypt('il8fTxDi4sg14u036UGThw==');
-  }
-
-  decrypt(String encryptedString) async {
-    var decryptedString = await Cipher2.decryptAesCbc128Padding7(encryptedString, key, iv);
-    print(decryptedString);
+      setState(() {
+        urlGoogleAuthen = data['data'];
+      });
+    }
   }
 }
 

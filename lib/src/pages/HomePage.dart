@@ -392,16 +392,6 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
     if (response.statusCode == 200) {}
   }
 
-  void googleAuthenUrl() async {
-    Map params = new Map<String, String>();
-    params['username'] = ApiService.userProfile.data.username;
-    params['gsecret'] = ApiService.userProfile.data.gsecret;
-    var encryptString = await ResourceUtil.stringEncryption(params);
-    var dryp = await ResourceUtil.decryptedString(encryptString);
-    print(dryp);
-    final response = await ApiService.googleAuthenUrl(encryptString);
-    if (response.statusCode == 200) {}
-  }
 
   void getWallet() async {
     // lấy thông tin ví
