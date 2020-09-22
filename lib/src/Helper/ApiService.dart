@@ -53,6 +53,23 @@ class ApiService {
     params["data"] = paymentData;
     return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
   }
+  //payment QRCode
+  static Future<Response> sendPaymentQR(String paymentData) {
+    final action = "paymentQR";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    var params = Map<String, String>();
+    params["data"] = paymentData;
+    return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
+  }
+
+  //qr payment
+  static Future<Response> paymentQRUrl(String paymentData) {
+    final action = "paymentQRUrl";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    var params = Map<String, String>();
+    params["data"] = paymentData;
+    return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
+  }
 
   //SEND payment
   static Future<Response> getWallet(String paymentData) {

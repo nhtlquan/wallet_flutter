@@ -15,14 +15,17 @@ import 'package:flutter_wallet_app/src/widgets/title_text.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MoneyTransferPage extends StatefulWidget {
-  MoneyTransferPage({Key key}) : super(key: key);
+class MoneyPaymentPage extends StatefulWidget {
+  var singCode = '';
+  var toWallet = '';
+
+  MoneyPaymentPage({Key key,@required this.toWallet, @required this.singCode}) : super(key: key);
 
   @override
-  _MoneyTransferPageState createState() => _MoneyTransferPageState();
+  _MoneyPaymentPageState createState() => _MoneyPaymentPageState();
 }
 
-class _MoneyTransferPageState extends State<MoneyTransferPage> {
+class _MoneyPaymentPageState extends State<MoneyPaymentPage> {
   var pitBalance = 0.0;
   var amount = 0.0;
   final _rate = 23500;
@@ -41,6 +44,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     // TODO: implement initState
     super.initState();
     getPitBalance();
+    recipientController.value = TextEditingValue(text: widget.toWallet);
     _euroController.addListener(this.onEuroChange);
     _usdController.addListener(this.onUSDChange);
   }
@@ -93,7 +97,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                         ),
                         SizedBox(width: 20),
                         TitleText(
-                          text: "Send Money",
+                          text: "Payment",
                           color: Colors.white,
                         )
                       ],
@@ -176,10 +180,16 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                                               size: 26,
                                               color: Colors.white,
                                             ),
+                                            suffixIcon: Icon(
+                                              Icons.lock_outline,
+                                              size: 24,
+                                              color: Colors.white,
+                                            ),
                                             isDense: true,
                                             contentPadding: EdgeInsets.all(10)),
                                         textAlign: TextAlign.left,
                                         controller: recipientController,
+                                        enabled: false,
                                         keyboardType: TextInputType.text,
                                         textInputAction: TextInputAction.search,
                                         style: TextStyle(
@@ -190,22 +200,6 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                                       ),
                                     ),
                                   ),
-                                  InkWell(
-                                    onTap: () async {
-                                      var result = await BarcodeScanner.scan();
-                                      recipientController.value = TextEditingValue(text: result.rawContent);
-                                      print(result.rawContent);
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(left: 10),
-                                      child: Center(
-                                        child: SvgPicture.asset(
-                                          ResourceUtil.icon('ic_qrcode.svg'),
-                                          width: 32,
-                                        ),
-                                      ),
-                                    ),
-                                  )
                                 ],
                               ),
                               SizedBox(
@@ -452,6 +446,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
       return;
     }
     Map params = new Map<String, String>();
+    params['sign'] = widget.singCode;
     params['username'] = ApiService.userProfile.data.username;
     params['fwallet'] = ApiService.PIT_WALLET;
     params['twallet'] = recipient;
@@ -460,7 +455,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     onLoading(true);
     print(params);
     var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.sendPayment(encryptString);
+    final response = await ApiService.sendPaymentQR(encryptString);
     onLoading(false);
     if (response.statusCode == 200) {
       Util.showToast('Transaction success to $recipient');

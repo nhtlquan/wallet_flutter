@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auro_avatar/auro_avatar.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ff_contact_avatar/ff_contact_avatar.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,9 @@ import 'package:flutter_wallet_app/src/Model/HistoryWallet.dart';
 import 'package:flutter_wallet_app/src/Model/PitHistory.dart';
 import 'package:flutter_wallet_app/src/Util/DateTimeUtil.dart';
 import 'package:flutter_wallet_app/src/Util/Util.dart';
+import 'package:flutter_wallet_app/src/pages/money_payment_page.dart';
 import 'package:flutter_wallet_app/src/pages/pageReciveMoney.dart';
+import 'package:flutter_wallet_app/src/pages/qrpaymentPage.dart';
 import 'package:flutter_wallet_app/src/theme/light_color.dart';
 import 'package:flutter_wallet_app/src/widgets/balance_card.dart';
 import 'package:flutter_wallet_app/src/widgets/title_text.dart';
@@ -243,15 +246,30 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
             },
             child: _icon(Icons.arrow_downward, "Receive", context)),
         InkWell(
-            onTap: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BuyPitPage()));
+            onTap: () async {
+              var result = await BarcodeScanner.scan();
+              var qrCode = result.rawContent;
+              if (qrCode.contains('|')) {
+                var singCode = qrCode.substring(0, qrCode.indexOf('|'));
+                var toWallet = qrCode.substring(qrCode.indexOf('|') + 1, qrCode.length);
+                print(singCode);
+                print(toWallet);
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => MoneyPaymentPage(
+                              toWallet: toWallet,
+                              singCode: singCode,
+                            )));
+              }
+              print(result.rawContent);
             },
             child: _icon(Icons.payment, "Payment", context)),
         InkWell(
             onTap: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => BuyPitPage()));
+              Navigator.push(context, CupertinoPageRoute(builder: (context) => QRPaymentPage()));
             },
-            child: _icon(Icons.add_shopping_cart, "Buy PIT", context)),
+            child: _icon(Icons.add_shopping_cart, "QR Payment", context)),
       ],
     );
   }
@@ -391,7 +409,6 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
     final response = await ApiService.confirm2FA(encryptString);
     if (response.statusCode == 200) {}
   }
-
 
   void getWallet() async {
     // lấy thông tin ví
