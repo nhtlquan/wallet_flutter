@@ -1,20 +1,23 @@
 import 'dart:convert';
 
+import 'package:PitWallet/src/login/ui/Input2faPage.dart';
+import 'package:PitWallet/src/login/ui/InputKycPage.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
-import 'package:flutter_wallet_app/src/Model/UserProfile.dart';
-import 'package:flutter_wallet_app/src/Util/Util.dart';
-import 'package:flutter_wallet_app/src/login/forgot2FA.dart';
-import 'package:flutter_wallet_app/src/login/forgotPass.dart';
-import 'package:flutter_wallet_app/src/login/style/theme.dart' as Theme;
-import 'package:flutter_wallet_app/src/login/utils/bubble_indication_painter.dart';
-import 'package:flutter_wallet_app/src/pages/HomePage.dart';
-import 'package:flutter_wallet_app/src/pages/MainPage.dart';
-import 'package:flutter_wallet_app/src/widgets/PageWidget.dart';
+import 'package:PitWallet/src/Helper/ApiService.dart';
+import 'package:PitWallet/src/Model/UserProfile.dart';
+import 'package:PitWallet/src/Util/Util.dart';
+import 'package:PitWallet/src/login/forgot2FA.dart';
+import 'package:PitWallet/src/login/forgotPass.dart';
+import 'package:PitWallet/src/login/style/theme.dart' as Theme;
+import 'package:PitWallet/src/login/utils/bubble_indication_painter.dart';
+import 'package:PitWallet/src/pages/HomePage.dart';
+import 'package:PitWallet/src/pages/MainPage.dart';
+import 'package:PitWallet/src/widgets/PageWidget.dart';
+import 'package:PitWallet/src/login/kycPage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -698,7 +701,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         Util.showToast(data['mess']);
       } else {
         Util.showToast('Login success');
+
        ApiService.userProfile = UserProfile.fromJson( json.decode(response.data));
+       if(ApiService.userProfile.data.kyc1==null || ApiService.userProfile.data.kyc2==null  ){
+         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => InputKycPage()));
+         return;
+       }
+       if(ApiService.userProfile.data.is2Fa==null || ApiService.userProfile.data.is2Fa=='false'  ){
+         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => TwoFAPage()));
+         return;
+       }
         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => MainPage()));
       }
     }

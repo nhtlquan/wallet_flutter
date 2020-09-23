@@ -64,8 +64,8 @@ class Data {
   dynamic cmt;
   dynamic cmtDate;
   dynamic cmtPlace;
-  dynamic kyc1;
-  dynamic kyc2;
+  String kyc1;
+  String kyc2;
   String iskyc;
   String packet;
   String isroot;
@@ -87,8 +87,8 @@ class Data {
     cmt: json["cmt"],
     cmtDate: json["cmt_date"],
     cmtPlace: json["cmt_place"],
-    kyc1: json["kyc1"],
-    kyc2: json["kyc2"],
+    kyc1: json["kyc1"] == null ? '' : json["kyc1"],
+    kyc2: json["kyc2"] == null ? '' : json["kyc2"],
     iskyc: json["iskyc"] == null ? null : json["iskyc"],
     packet: json["packet"] == null ? null : json["packet"],
     isroot: json["isroot"] == null ? null : json["isroot"],

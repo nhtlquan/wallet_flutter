@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/theme/light_color.dart';
+import 'package:PitWallet/src/theme/light_color.dart';
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({Key key}) : super(key: key);

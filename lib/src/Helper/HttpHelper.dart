@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/dio.dart' as dioLib;
-import 'package:flutter_wallet_app/src/ResourceUtil.dart';
+import 'package:PitWallet/src/ResourceUtil.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as path;
 

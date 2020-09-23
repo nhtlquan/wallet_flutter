@@ -5,7 +5,7 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_wallet_app/src/Model/UserProfile.dart';
+import 'package:PitWallet/src/Model/UserProfile.dart';
 
 import 'HttpHelper.dart';
 

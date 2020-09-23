@@ -5,7 +5,6 @@ import 'package:cipher2/cipher2.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:password/password.dart';
 import 'package:password_hash/salt.dart';
 
 class ResourceUtil {

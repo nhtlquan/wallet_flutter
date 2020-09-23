@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.thealphamerc.flutter_wallet_app">
+    package="com.pitwallet.app">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
@@ -9,7 +9,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_wallet_app"
+        android:label="Pit Wallet"
         android:icon="@mipmap/ic_launcher">
 
         <activity

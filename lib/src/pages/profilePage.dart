@@ -1,15 +1,16 @@
+import 'package:PitWallet/src/login/ui/login_page.dart';
 import 'package:auro_avatar/auro_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
-import 'package:flutter_wallet_app/src/ResourceUtil.dart';
-import 'package:flutter_wallet_app/src/Util/DateTimeUtil.dart';
-import 'package:flutter_wallet_app/src/login/2faPage.dart';
-import 'package:flutter_wallet_app/src/login/changePassword.dart';
-import 'package:flutter_wallet_app/src/login/kycPage.dart';
-import 'package:flutter_wallet_app/src/pages/updateProfile.dart';
-import 'package:flutter_wallet_app/src/theme/light_color.dart';
-import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:PitWallet/src/Helper/ApiService.dart';
+import 'package:PitWallet/src/ResourceUtil.dart';
+import 'package:PitWallet/src/Util/DateTimeUtil.dart';
+import 'package:PitWallet/src/login/2faPage.dart';
+import 'package:PitWallet/src/login/changePassword.dart';
+import 'package:PitWallet/src/login/kycPage.dart';
+import 'package:PitWallet/src/pages/updateProfile.dart';
+import 'package:PitWallet/src/theme/light_color.dart';
+import 'package:PitWallet/src/widgets/title_text.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -209,22 +210,28 @@ class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClient
                       ),
                     ),
                     Center(
-                      child: Container(
-                          margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          decoration: BoxDecoration(
-                              color: LightColor.navyBlue1, borderRadius: BorderRadius.all(Radius.circular(8))),
-                          child: Center(
-                            child: Wrap(
-                              children: <Widget>[
-                                TitleText(
-                                  text: "Logout",
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                          )),
+                      child: InkWell(
+                        onTap: (){
+                          ApiService.userProfile = null;
+                          Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => LoginPage()));
+                        },
+                        child: Container(
+                            margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            decoration: BoxDecoration(
+                                color: LightColor.navyBlue1, borderRadius: BorderRadius.all(Radius.circular(8))),
+                            child: Center(
+                              child: Wrap(
+                                children: <Widget>[
+                                  TitleText(
+                                    text: "Logout",
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
                     ),
                   ],
                 ),

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/pages/profilePage.dart';
-import 'package:flutter_wallet_app/src/pages/transactionPage.dart';
-import 'package:flutter_wallet_app/src/theme/light_color.dart';
-import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:PitWallet/src/pages/profilePage.dart';
+import 'package:PitWallet/src/pages/transactionPage.dart';
+import 'package:PitWallet/src/theme/light_color.dart';
+import 'package:PitWallet/src/widgets/title_text.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'HomePage.dart';

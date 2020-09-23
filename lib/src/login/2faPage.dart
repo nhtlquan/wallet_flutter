@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:cipher2/cipher2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
-import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
-import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:PitWallet/src/Helper/ApiService.dart';
+import 'package:PitWallet/src/widgets/BackgroundWidget.dart';
+import 'package:PitWallet/src/widgets/title_text.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 
 import '../ResourceUtil.dart';
+
 
 class TwoFactorAuthenticationPage extends StatefulWidget {
   @override

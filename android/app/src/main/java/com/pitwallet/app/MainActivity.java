@@ -1,4 +1,4 @@
-package com.thealphamerc.flutter_wallet_app;
+package com.pitwallet.app;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

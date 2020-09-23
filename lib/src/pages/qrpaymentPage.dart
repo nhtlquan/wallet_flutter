@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:auro_avatar/auro_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_wallet_app/src/Helper/ApiService.dart';
-import 'package:flutter_wallet_app/src/theme/light_color.dart';
-import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
-import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:PitWallet/src/Helper/ApiService.dart';
+import 'package:PitWallet/src/theme/light_color.dart';
+import 'package:PitWallet/src/widgets/BackgroundWidget.dart';
+import 'package:PitWallet/src/widgets/title_text.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../ResourceUtil.dart';

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:PitWallet/src/login/ui/Input2faPage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:PitWallet/src/Helper/ApiService.dart';
 import 'package:PitWallet/src/Helper/ChooseImageHelper.dart';
@@ -7,17 +9,14 @@ import 'package:PitWallet/src/Util/Util.dart';
 import 'package:PitWallet/src/widgets/BackgroundWidget.dart';
 import 'package:PitWallet/src/widgets/title_text.dart';
 
-import '../ResourceUtil.dart';
-
-class VerifyKYCPage extends StatefulWidget {
-
-  VerifyKYCPage({Key key}) : super(key: key);
+class InputKycPage extends StatefulWidget {
+  InputKycPage({Key key}) : super(key: key);
 
   @override
-  _VerifyKYCPageState createState() => _VerifyKYCPageState();
+  _InputKycPageState createState() => _InputKycPageState();
 }
 
-class _VerifyKYCPageState extends State<VerifyKYCPage> {
+class _InputKycPageState extends State<InputKycPage> {
   var enable2FA = true;
 
   @override
@@ -46,6 +45,13 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
                             color: Colors.white,
                           )
                         ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          'Note: Please update KYC to create a wallet',
+                          style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0, right: 10),
@@ -192,24 +198,6 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
                       SizedBox(
                         height: 50,
                       )
-//                      Center(
-//                        child: Container(
-//                            margin: EdgeInsets.only(left: 20, right: 20, top: 20),
-//                            width: 200,
-//                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//                            decoration: BoxDecoration(
-//                                color: LightColor.lightBlue1, borderRadius: BorderRadius.all(Radius.circular(8))),
-//                            child: Center(
-//                              child: Wrap(
-//                                children: <Widget>[
-//                                  TitleText(
-//                                    text: "Update",
-//                                    color: Colors.white,
-//                                  ),
-//                                ],
-//                              ),
-//                            )),
-//                      ),
                     ],
                   ),
                 ),
@@ -233,6 +221,9 @@ class _VerifyKYCPageState extends State<VerifyKYCPage> {
         else
           ApiService.userProfile.data.kyc2 = data['kyc2'];
         setState(() {});
+        if (ApiService.userProfile.data.kyc1.isNotEmpty && ApiService.userProfile.data.kyc2.isNotEmpty) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) => TwoFAPage()));
+        }
       } else {
         Util.showToast('Upload fail');
       }

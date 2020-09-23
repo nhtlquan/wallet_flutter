@@ -3,7 +3,7 @@ import 'dart:io';
 export 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/widgets/LineBaseWidget.dart';
+import 'package:PitWallet/src/widgets/LineBaseWidget.dart';
 import 'package:image_crop/image_crop.dart';
 import 'package:image_picker/image_picker.dart';
 

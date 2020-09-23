@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_wallet_app/src/theme/light_color.dart';
-import 'package:flutter_wallet_app/src/widgets/BackgroundWidget.dart';
-import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:PitWallet/src/theme/light_color.dart';
+import 'package:PitWallet/src/widgets/BackgroundWidget.dart';
+import 'package:PitWallet/src/widgets/title_text.dart';
 
 import '../ResourceUtil.dart';
 

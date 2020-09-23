@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/Helper/Constant.dart';
+import 'package:PitWallet/src/Helper/Constant.dart';
 import 'package:pbkdf2_dart/pbkdf2_dart.dart';
 import 'package:crypto/crypto.dart';
 class LineBaseWidget extends StatelessWidget {

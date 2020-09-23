@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wallet_app/src/Model/HistoryWallet.dart';
-import 'package:flutter_wallet_app/src/Util/DateTimeUtil.dart';
-import 'package:flutter_wallet_app/src/Util/Util.dart';
-import 'package:flutter_wallet_app/src/theme/light_color.dart';
-import 'package:flutter_wallet_app/src/widgets/title_text.dart';
+import 'package:PitWallet/src/Model/HistoryWallet.dart';
+import 'package:PitWallet/src/Util/DateTimeUtil.dart';
+import 'package:PitWallet/src/Util/Util.dart';
+import 'package:PitWallet/src/theme/light_color.dart';
+import 'package:PitWallet/src/widgets/title_text.dart';
 
 class ItemTransationStake extends StatelessWidget {
   HistoryWa historyWa;
