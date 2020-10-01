@@ -94,6 +94,7 @@ class _QRPaymentPageState extends State<QRPaymentPage> {
                                           data: qrPayment,
                                           version: QrVersions.auto,
                                           size: 250.0,
+
                                         ),
 //                                        Center(
 //                                          child: Container(

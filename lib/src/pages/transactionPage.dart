@@ -137,7 +137,7 @@ class _TransactionPageState extends State<TransactionPage> with AutomaticKeepAli
           shrinkWrap: true,
           padding: EdgeInsets.all(0),
           itemBuilder: (ct, index) {
-            return ItemTransactionPit(listHistoryPit[index]);
+            return ItemTransactionPit(listHistoryPit[index],index);
           },
           itemCount: listHistoryPit.length,
         );
@@ -147,7 +147,7 @@ class _TransactionPageState extends State<TransactionPage> with AutomaticKeepAli
           shrinkWrap: true,
           padding: EdgeInsets.all(0),
           itemBuilder: (ct, index) {
-            return ItemTransationStake(listHistoryStake[index], WalletType.s);
+            return ItemTransationStake(listHistoryStake[index], WalletType.s,index);
           },
           itemCount: listHistoryStake.length,
         );
@@ -157,7 +157,7 @@ class _TransactionPageState extends State<TransactionPage> with AutomaticKeepAli
           shrinkWrap: true,
           padding: EdgeInsets.all(0),
           itemBuilder: (ct, index) {
-            return ItemTransationStake(listHistoryBusiness[index], WalletType.b);
+            return ItemTransationStake(listHistoryBusiness[index], WalletType.b,index);
           },
           itemCount: listHistoryBusiness.length,
         );

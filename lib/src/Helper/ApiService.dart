@@ -53,6 +53,7 @@ class ApiService {
     params["data"] = paymentData;
     return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
   }
+
   //payment QRCode
   static Future<Response> sendPaymentQR(String paymentData) {
     final action = "paymentQR";
@@ -169,5 +170,38 @@ class ApiService {
     final action = "KYC";
     final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
     return HttpHelper.uploadImage(url, file, kycname);
+  }
+
+  //SendPit
+  static Future<Response> packetList(String data) {
+    final action = "PacketList";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    var params = Map<String, String>();
+    params['data'] = data;
+    return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
+  }
+
+  static Future<Response> updatePacket(String data) {
+    final action = "updatePacket";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    var params = Map<String, String>();
+    params['data'] = data;
+    return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
+  }
+
+  static Future<Response> changePassword(String data) {
+    final action = "ChangePassword";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    var params = Map<String, String>();
+    params['data'] = data;
+    return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
+  }
+
+  static Future<Response> updateInfo(String data) {
+    final action = "UpdateInfo";
+    final url = ApiService.BASE_URL + ApiService.API_VERSION + action;
+    var params = Map<String, String>();
+    params['data'] = data;
+    return HttpHelper.requestApi(url, params, HttpMethod.post, false, true);
   }
 }

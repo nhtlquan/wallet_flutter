@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   final FocusNode myFocusNodeName = FocusNode();
 
   TextEditingController loginEmailController = new TextEditingController(text: 'dungbinance@gmail.com');
-  TextEditingController loginPasswordController = new TextEditingController(text: '123456');
+  TextEditingController loginPasswordController = new TextEditingController(text: '1234567');
 
   bool _obscureTextLogin = true;
   bool _obscureTextSignup = true;

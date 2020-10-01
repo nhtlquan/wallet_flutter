@@ -49,7 +49,7 @@ class _InputKycPageState extends State<InputKycPage> {
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          'Note: Please update KYC to create a wallet',
+                          'Note: Please update KYC to create a wallet, KYC will be verify',
                           style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
                         ),
                       ),
@@ -222,7 +222,8 @@ class _InputKycPageState extends State<InputKycPage> {
           ApiService.userProfile.data.kyc2 = data['kyc2'];
         setState(() {});
         if (ApiService.userProfile.data.kyc1.isNotEmpty && ApiService.userProfile.data.kyc2.isNotEmpty) {
-          Navigator.push(context, CupertinoPageRoute(builder: (context) => TwoFAPage()));
+//          Navigator.push(context, CupertinoPageRoute(builder: (context) => TwoFAPage()));
+        Util.showToast('KYC will be verify, please wait!');
         }
       } else {
         Util.showToast('Upload fail');

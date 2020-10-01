@@ -19,9 +19,12 @@ import 'package:PitWallet/src/pages/qrpaymentPage.dart';
 import 'package:PitWallet/src/theme/light_color.dart';
 import 'package:PitWallet/src/widgets/balance_card.dart';
 import 'package:PitWallet/src/widgets/title_text.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:snaplist/snaplist_view.dart';
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../ResourceUtil.dart';
 import 'buyPitMoney.dart';
@@ -100,7 +103,7 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
                       currentPage = index;
                       changeHistory();
                     },
-                    aspectRatio: 2.0,
+                    aspectRatio: 2.5,
                     enlargeCenterPage: true,
                     enableInfiniteScroll: false,
                     enlargeStrategy: CenterPageEnlargeStrategy.height,
@@ -232,66 +235,103 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _operationsWidget(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        InkWell(
-            onTap: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => MoneyTransferPage()));
-            },
-            child: _icon(Icons.send, "Send", context)),
-        InkWell(
-            onTap: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => ReceiveMoneyPage()));
-            },
-            child: _icon(Icons.arrow_downward, "Receive", context)),
-        InkWell(
-            onTap: () async {
-              var result = await BarcodeScanner.scan();
-              var qrCode = result.rawContent;
-              if (qrCode.contains('|')) {
-                var singCode = qrCode.substring(0, qrCode.indexOf('|'));
-                var toWallet = qrCode.substring(qrCode.indexOf('|') + 1, qrCode.length);
-                print(singCode);
-                print(toWallet);
-                Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => MoneyPaymentPage(
-                              toWallet: toWallet,
-                              singCode: singCode,
-                            )));
-              }
-              print(result.rawContent);
-            },
-            child: _icon(Icons.payment, "Payment", context)),
-        InkWell(
-            onTap: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) => QRPaymentPage()));
-            },
-            child: _icon(Icons.add_shopping_cart, "QR Payment", context)),
-      ],
-    );
+    return Container(
+        height: 250,
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
+          itemCount: 6,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext _, int index) {
+            switch (index) {
+              case 0:
+                return InkWell(
+                    onTap: () {
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => MoneyTransferPage()));
+                    },
+                    child: _icon(ResourceUtil.icon('ic_send.svg'), 'Send', context));
+              case 1:
+                return InkWell(
+                    onTap: () {
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => ReceiveMoneyPage()));
+                    },
+                    child: _icon(ResourceUtil.icon('ic_receive.svg'), 'Receive', context));
+              case 2:
+                return InkWell(
+                    onTap: () async {
+                      var result = await BarcodeScanner.scan();
+                      var qrCode = result.rawContent;
+                      if (qrCode.contains('|')) {
+                        var singCode = qrCode.substring(0, qrCode.indexOf('|'));
+                        var toWallet = qrCode.substring(qrCode.indexOf('|') + 1, qrCode.length);
+                        print(singCode);
+                        print(toWallet);
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => MoneyPaymentPage(
+                                      toWallet: toWallet,
+                                      singCode: singCode,
+                                    )));
+                      }
+                      print(result.rawContent);
+                    },
+                    child: _icon(ResourceUtil.icon('ic_payment.svg'), 'Payment', context));
+              case 3:
+                return InkWell(
+                    onTap: () {
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => QRPaymentPage()));
+                    },
+                    child: _icon(ResourceUtil.icon('ic_qrcode_home.svg'), 'QR Payment', context));
+              case 4:
+                return InkWell(
+                    onTap: () {
+                      Util.showToast('Coming soon');
+                    },
+                    child: _icon(ResourceUtil.icon('ic_packet.svg'), 'Packet', context));
+              case 5:
+                return InkWell(
+                    onTap: () {
+                      _launchURL();
+                    },
+                    child: _icon(ResourceUtil.icon('ic_fibo.svg'), 'FiboGroup', context));
+            }
+            return _icon(ResourceUtil.icon('name'), 'Send', context);
+          },
+        ));
   }
 
-  Widget _icon(IconData icon, String text, BuildContext context) {
+  _launchURL() async {
+    const url = 'https://www.fibo-group.vn/?ref=IB_PitnexCapital';
+    await launch(url);
+  }
+
+  Widget _icon(String icon, String text, BuildContext context) {
     return Column(
       children: <Widget>[
         Container(
           height: 80,
           width: 80,
-          margin: EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              boxShadow: <BoxShadow>[BoxShadow(color: Color(0xfff3f3f3), offset: Offset(5, 5), blurRadius: 10)]),
           child: Material(
-              elevation: 3,
-              type: MaterialType.canvas,
-              color: Colors.white,
-              shadowColor: Color(0xfff3f3f3),
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              child: Icon(icon)),
+            elevation: 3,
+            type: MaterialType.canvas,
+            color: Colors.white,
+            shadowColor: Color(0xfff3f3f3),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: SvgPicture.asset(
+                icon,
+                fit: BoxFit.fill,
+                width: 24,
+                height: 24,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
         ),
         Text(text,
             style: GoogleFonts.muli(
@@ -304,15 +344,21 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _transection(String text, String time, String amount) {
+    bool status = amount.contains('+');
     return ListTile(
       leading: Container(
         height: 50,
         width: 50,
+        padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: LightColor.navyBlue1,
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
-        child: Icon(Icons.hd, color: Colors.white),
+        child: SvgPicture.asset(
+          status ? ResourceUtil.icon('ic_receive.svg') : ResourceUtil.icon('ic_send.svg'),
+          fit: BoxFit.fill,
+          width: 24,
+          height: 24,
+        ),
       ),
       contentPadding: EdgeInsets.symmetric(),
       title: Text(
@@ -399,15 +445,6 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
       else
         listHistoryBusiness = pitHistory.data;
     }
-  }
-
-  void confirm2FA() async {
-    Map params = new Map<String, String>();
-    params['gsecret'] = ApiService.userProfile.data.gsecret;
-    params['code2fa'] = '088164';
-    var encryptString = await ResourceUtil.stringEncryption(params);
-    final response = await ApiService.confirm2FA(encryptString);
-    if (response.statusCode == 200) {}
   }
 
   void getWallet() async {

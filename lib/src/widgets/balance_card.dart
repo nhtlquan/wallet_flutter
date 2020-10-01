@@ -14,10 +14,8 @@ class BalanceCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
       child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(40)),
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           child: Container(
-            width: MediaQuery.of(context).size.width - 60,
-            height: MediaQuery.of(context).size.height * .27,
             color: LightColor.navyBlue1,
             child: Stack(
               fit: StackFit.expand,
@@ -28,24 +26,19 @@ class BalanceCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       name,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: LightColor.lightNavyBlue),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: LightColor.lightNavyBlue),
                     ),
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          balance,
+                          balance + ' ' + unit,
                           style: GoogleFonts.muli(
                               textStyle: Theme.of(context).textTheme.display1,
-                              fontSize: 35,
+                              fontSize: 21,
                               fontWeight: FontWeight.w800,
                               color: LightColor.yellow2),
-                        ),
-                        Text(
-                          ' ' + unit,
-                          style: TextStyle(
-                              fontSize: 35, fontWeight: FontWeight.w500, color: LightColor.yellow.withAlpha(200)),
                         ),
                       ],
                     ),
@@ -77,7 +70,7 @@ class BalanceCard extends StatelessWidget {
                   ],
                 ),
                 Positioned(
-                  left: -170,
+                  left: -150,
                   top: -170,
                   child: CircleAvatar(
                     radius: 130,
