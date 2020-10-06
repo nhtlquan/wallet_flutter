@@ -45,6 +45,9 @@ class _TwoFactorAuthenticationPageState extends State<TwoFactorAuthenticationPag
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         TitleText(

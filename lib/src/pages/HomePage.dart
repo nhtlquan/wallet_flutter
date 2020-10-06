@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:PitWallet/src/pages/UpgradePacket.dart';
 import 'package:auro_avatar/auro_avatar.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -111,17 +112,17 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
                   items: [
                     BalanceCard(
                       balance: pitBalance.toString(),
-                      name: 'PITNEX WALLET',
+                      name: 'PIT WALLET',
                       unit: 'PIT',
                     ),
                     BalanceCard(
                       balance: stakeBalance.toString(),
-                      name: 'STAKE WALLET',
+                      name: 'STAKE',
                       unit: 'S.PIT',
                     ),
                     BalanceCard(
                       balance: businessBalance.toString(),
-                      name: 'BUSSINESS WALLET',
+                      name: 'Business',
                       unit: 'B.PIT',
                     )
                   ],
@@ -287,7 +288,7 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
               case 4:
                 return InkWell(
                     onTap: () {
-                      Util.showToast('Coming soon');
+                      Navigator.push(context, CupertinoPageRoute(builder: (context) => UpgradePacket()));
                     },
                     child: _icon(ResourceUtil.icon('ic_packet.svg'), 'Packet', context));
               case 5:
@@ -403,6 +404,7 @@ class _State extends State<HomePage> with AutomaticKeepAliveClientMixin {
     Map params = new Map<String, String>();
     params['wallet_type'] = walletType.toString().split('.').last;
     params['username'] = ApiService.userProfile.data.username;
+    print(params);
     var encryptString = await ResourceUtil.stringEncryption(params);
     final response = await ApiService.getWalletBalance(encryptString);
     if (response.statusCode == 200) {

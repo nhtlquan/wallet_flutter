@@ -22,6 +22,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../ResourceUtil.dart';
+import 'Verify2FA.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   final FocusNode myFocusNodeName = FocusNode();
 
   TextEditingController loginEmailController = new TextEditingController(text: 'dungbinance@gmail.com');
-  TextEditingController loginPasswordController = new TextEditingController(text: '1234567');
+  TextEditingController loginPasswordController = new TextEditingController(text: '123456');
 
   bool _obscureTextLogin = true;
   bool _obscureTextSignup = true;
@@ -704,14 +705,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
        ApiService.userProfile = UserProfile.fromJson( json.decode(response.data));
        if(ApiService.userProfile.data.kyc1==null || ApiService.userProfile.data.kyc2==null  ){
-         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => InputKycPage()));
+         Navigator.push(context, CupertinoPageRoute(builder: (context) => InputKycPage()));
          return;
        }
        if(ApiService.userProfile.data.is2Fa==null || ApiService.userProfile.data.is2Fa=='false'  ){
-         Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => TwoFAPage()));
+         Navigator.push(context, CupertinoPageRoute(builder: (context) => TwoFAPage()));
          return;
        }
-        Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => MainPage()));
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => Verify2FAPage()));
       }
     }
 

@@ -59,6 +59,9 @@ class _Verify2FAPageState extends State<Verify2FAPage> {
                       Row(
                         children: <Widget>[
                           BackButton(
+                            onPressed: (){
+                              Navigator.pop(context);
+                            },
                             color: Colors.white,
                           ),
                           TitleText(

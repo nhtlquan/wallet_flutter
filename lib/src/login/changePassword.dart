@@ -57,6 +57,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         TitleText(

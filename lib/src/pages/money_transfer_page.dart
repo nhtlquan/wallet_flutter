@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:PitWallet/src/Helper/Constant.dart';
 import 'package:auro_avatar/auro_avatar.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +14,10 @@ import 'package:PitWallet/src/widgets/BackgroundWidget.dart';
 import 'package:PitWallet/src/widgets/PageWidget.dart';
 import 'package:PitWallet/src/widgets/title_text.dart';
 import 'package:flutter/services.dart';
+import 'package:pin_code_text_field/pin_code_text_field.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../ButtonWidget.dart';
 
 class MoneyTransferPage extends StatefulWidget {
   MoneyTransferPage({Key key}) : super(key: key);
@@ -35,6 +39,9 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
   var _isLoadingSubject = BehaviorSubject<bool>.seeded(false);
 
   Stream get isLoadingStream => _isLoadingSubject.stream;
+  var _otpController = new TextEditingController();
+  var otp = '';
+  PinCodeTextField pinCodeTextField;
 
   @override
   void initState() {
@@ -71,6 +78,31 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
 
   @override
   Widget build(BuildContext context) {
+    pinCodeTextField = new PinCodeTextField(
+      autofocus: false,
+      hideCharacter: false,
+      highlight: true,
+      highlightColor: Constant.TEXTCOLOR_ORANGE,
+      defaultBorderColor: Colors.grey,
+      pinBoxBorderWidth: 1,
+      hasTextBorderColor: Constant.TEXTCOLOR_BLUE_2D,
+      maxLength: 6,
+      hasError: false,
+      controller: _otpController,
+//      controller: controller,
+      onTextChanged: (text) {},
+      onDone: (text) {
+        otp = text;
+      },
+      pinBoxHeight: 45,
+      pinBoxWidth: 40,
+      pinBoxRadius: 8,
+      wrapAlignment: WrapAlignment.start,
+      pinBoxDecoration: ProvidedPinBoxDecoration.defaultPinBoxDecoration,
+      pinTextStyle: TextStyle(fontWeight: FontWeight.bold, color: ResourceUtil.hexToColor("#273879"), fontSize: 21.0),
+      pinTextAnimatedSwitcherTransition: ProvidedPinBoxTextAnimation.scalingTransition,
+      pinTextAnimatedSwitcherDuration: Duration(milliseconds: 300),
+    );
     return PageWidget(
         streamLoading: isLoadingStream,
         onBackPress: () {
@@ -89,6 +121,9 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         SizedBox(width: 20),
@@ -385,7 +420,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
           ),
           InkWell(
             onTap: () {
-              sendPit();
+              showPopupOTP();
             },
             child: Container(
                 margin: EdgeInsets.only(bottom: 10, top: 20),
@@ -439,7 +474,7 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     }
   }
 
-  void sendPit() async {
+  void showPopupOTP() {
     var recipient = recipientController.text;
     var amount = _euroController.text;
     var note = _noteController.text;
@@ -451,6 +486,106 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
       Util.showToast('Amount wrong');
       return;
     }
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (popContext) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  width: 330,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Verify 2FA',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Constant.TEXTCOLOR_BLACK_2B,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Please input 2FA from app Authenticator',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Constant.TEXTCOLOR_BLACK_2B,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      pinCodeTextField,
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ButtonWidget(
+                        title: 'Xác thực',
+                        onTap: () {
+                          Navigator.pop(context);
+                          confirm2FA();
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void confirm2FA() async {
+
+    if (otp.isEmpty || otp.length < 6) {
+      Util.showToast('Please input Google authenticator code!');
+      return;
+    }
+    onLoading(true);
+    Map params = new Map<String, String>();
+    params['gsecret'] = ApiService.userProfile.data.gsecret;
+    params['code2fa'] = otp;
+    var encryptString = await ResourceUtil.stringEncryption(params);
+    final response = await ApiService.confirm2FA(encryptString);
+    onLoading(false);
+    if (response.statusCode == 200) {
+      var data = json.decode(response.data);
+      if (data['status'] == 'no') {
+        Util.showToast('2FA wrong');
+      } else {
+        FocusScope.of(context).unfocus();
+        sendPit();
+      }
+    }
+  }
+
+  void sendPit() async {
+    var recipient = recipientController.text;
+    var amount = _euroController.text;
+    var note = _noteController.text;
+
     Map params = new Map<String, String>();
     params['username'] = ApiService.userProfile.data.username;
     params['fwallet'] = ApiService.PIT_WALLET;
@@ -462,10 +597,12 @@ class _MoneyTransferPageState extends State<MoneyTransferPage> {
     var encryptString = await ResourceUtil.stringEncryption(params);
     final response = await ApiService.sendPayment(encryptString);
     onLoading(false);
-    if (response.statusCode == 200) {
+    var data = json.decode(response.data);
+    if (response.statusCode == 200 && !(data['status'] == 'no')) {
       Util.showToast('Transaction success to $recipient');
+      Navigator.pop(context);
     } else {
-      Util.showToast('Transaction fail');
+      Util.showToast(data['mess']);
     }
   }
 

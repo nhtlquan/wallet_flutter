@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:PitWallet/src/Model/PacketList.dart';
 import 'package:PitWallet/src/Util/Util.dart';
 import 'package:PitWallet/src/login/ui/createWallet.dart';
 import 'package:PitWallet/src/pages/MainPage.dart';
@@ -12,20 +13,22 @@ import 'package:PitWallet/src/widgets/BackgroundWidget.dart';
 import 'package:PitWallet/src/widgets/title_text.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../ResourceUtil.dart';
+import '../ResourceUtil.dart';
 
-class TwoFAPage extends StatefulWidget {
+class UpgradePacket extends StatefulWidget {
   @override
-  _TwoFAPageState createState() => _TwoFAPageState();
+  _UpgradePacketState createState() => _UpgradePacketState();
 }
 
-class _TwoFAPageState extends State<TwoFAPage> {
+class _UpgradePacketState extends State<UpgradePacket> {
   var enable2FA = false;
   var urlGoogleAuthen = '';
   var _isLoadingSubject = BehaviorSubject<bool>.seeded(false);
 
   Stream get isLoadingStream => _isLoadingSubject.stream;
   TextEditingController code2FaController = new TextEditingController();
+  var listOfDropdownMenuItems = new List<ItemPacket>();
+  ItemPacket packet;
 
   @override
   void dispose() {
@@ -38,12 +41,13 @@ class _TwoFAPageState extends State<TwoFAPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getPacket();
   }
 
   @override
   Widget build(BuildContext context) {
     return PageWidget(
-      streamLoading: isLoadingStream,
+        streamLoading: isLoadingStream,
         child: Container(
           height: MediaQuery.of(context).size.height,
           child: Stack(
@@ -59,13 +63,13 @@ class _TwoFAPageState extends State<TwoFAPage> {
                       Row(
                         children: <Widget>[
                           BackButton(
-                            onPressed: (){
+                            onPressed: () {
                               Navigator.pop(context);
                             },
                             color: Colors.white,
                           ),
                           TitleText(
-                            text: "Verify 2FA",
+                            text: "Upgrade packet",
                             color: Colors.white,
                           )
                         ],
@@ -73,94 +77,76 @@ class _TwoFAPageState extends State<TwoFAPage> {
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          'Note: Enable 2FA to create a wallet',
+                          'Note: Upgrade requests will be approved within 2 business days',
                           style: TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
                         ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Stack(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 10, left: 20, right: 20),
-                            child: Material(
-                              color: Colors.white,
-                              elevation: 10,
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 20.0, right: 20),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            TitleText(
-                                              text: "2FA",
-                                              color: Colors.black,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                            Switch(
-                                              value: enable2FA,
-                                              onChanged: (bool value) {
-                                                if (value) googleAuthenUrl();
-                                                setState(() {
-                                                  enable2FA = value;
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 40,
-                                    ),
-                                    if (enable2FA)
-                                      Center(
-                                        child: Image.network(
-                                          urlGoogleAuthen,
-                                          height: 250,
-                                          width: 250,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    SizedBox(
-                                      height: 40,
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        '2FA QRCode',
-                                        style: TextStyle(fontSize: 18, color: Colors.grey, fontStyle: FontStyle.italic),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (enable2FA)
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TitleText(
-                              text: "Google authenticator code",
+                              text: "Select packet",
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                              child: DropdownButtonHideUnderline(
+                                child: ButtonTheme(
+                                  alignedDropdown: true,
+                                  child: DropdownButton(
+                                      value: packet,
+                                      dropdownColor: Colors.white,
+                                      iconEnabledColor: LightColor.lightBlue1,
+                                      items: listOfDropdownMenuItems.map((location) {
+                                        return DropdownMenuItem(
+                                          child: new Text(location.name),
+                                          value: location,
+                                        );
+                                      }).toList(),
+                                      // [
+                                      //   DropdownMenuItem(
+                                      //     child: Text(
+                                      //       "Standard (1000 PIT)",
+                                      //     ),
+                                      //     value: 1,
+                                      //   ),
+                                      //   DropdownMenuItem(
+                                      //     child: Text(
+                                      //       "Second Item",
+                                      //     ),
+                                      //     value: 2,
+                                      //   ),
+                                      //   DropdownMenuItem(
+                                      //       child: Text(
+                                      //         "Third Item",
+                                      //       ),
+                                      //       value: 3),
+                                      //   DropdownMenuItem(
+                                      //       child: Text(
+                                      //         "Fourth Item",
+                                      //       ),
+                                      //       value: 4)
+                                      // ],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          packet = value;
+                                        });
+                                      }),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TitleText(
+                              text: "2FA Code",
                               color: Colors.white,
                               fontSize: 16,
                             ),
@@ -201,11 +187,10 @@ class _TwoFAPageState extends State<TwoFAPage> {
                           ],
                         ),
                       ),
-                      if (enable2FA)
                       Center(
                         child: InkWell(
                           onTap: () {
-                            createWallet();
+                            confirmUpgrade();
                           },
                           child: Container(
                               margin: EdgeInsets.only(left: 20, right: 20, top: 0),
@@ -217,7 +202,7 @@ class _TwoFAPageState extends State<TwoFAPage> {
                                 child: Wrap(
                                   children: <Widget>[
                                     TitleText(
-                                      text: "CREATE WALLET",
+                                      text: "Upgrade",
                                       color: Colors.white,
                                     ),
                                   ],
@@ -225,7 +210,9 @@ class _TwoFAPageState extends State<TwoFAPage> {
                               )),
                         ),
                       ),
-                      SizedBox(height: 20,)
+                      SizedBox(
+                        height: 20,
+                      )
                     ],
                   ),
                 ),
@@ -234,9 +221,10 @@ class _TwoFAPageState extends State<TwoFAPage> {
           ),
         ));
   }
-  void createWallet() async {
-    var code2fa= code2FaController.text.toString();
-    if(code2fa.isEmpty){
+
+  void confirmUpgrade() async {
+    var code2fa = code2FaController.text.toString();
+    if (code2fa.isEmpty) {
       Util.showToast('Please input Google authenticator code!');
       return;
     }
@@ -245,17 +233,17 @@ class _TwoFAPageState extends State<TwoFAPage> {
     params['username'] = ApiService.userProfile.data.username;
     params['gsecret'] = ApiService.userProfile.data.gsecret;
     params['code_2fa'] = code2fa;
+    params['packet'] = packet.value;
+    print(params);
     var encryptString = await ResourceUtil.stringEncryption(params);
-
-    final response = await ApiService.createWallet(encryptString);
+    final response = await ApiService.updatePacket(encryptString);
     onLoading(false);
     if (response.statusCode == 200) {
       var data = json.decode(response.data);
       if (data['status'] == 'no') {
         Util.showToast(data['mess']);
       } else {
-        Util.showToast('Create success');
-        Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => MainPage()));
+        Util.showToast('Upgrade packet success');
       }
     }
   }
@@ -264,26 +252,31 @@ class _TwoFAPageState extends State<TwoFAPage> {
     _isLoadingSubject.sink.add(isLoading);
   }
 
-  void googleAuthenUrl() async {
+  void getPacket() async {
     Map params = new Map<String, String>();
-    params['username'] = ApiService.userProfile.data.username;
-    params['gsecret'] = ApiService.userProfile.data.gsecret;
+    params['packet'] = 'packet';
     var encryptString = await ResourceUtil.stringEncryption(params);
-    var dryp = await ResourceUtil.decryptedString(encryptString);
-    print(dryp);
-    final response = await ApiService.googleAuthenUrl(encryptString);
+    final response = await ApiService.packetList(encryptString);
+    onLoading(false);
     if (response.statusCode == 200) {
       var data = json.decode(response.data);
-      setState(() {
-        urlGoogleAuthen = data['data'];
-      });
+      if (data['status'] == 'no') {
+        Util.showToast(data['mess']);
+      } else {
+        PacketList packetList = PacketList.fromJson(json.decode(response.data));
+        var dataPacket = packetList.data;
+        dataPacket.forEach((key, value) {
+          listOfDropdownMenuItems.add(new ItemPacket(value.name + ' (' + value.price + ' PIT)', value.price));
+        });
+        setState(() {});
+      }
     }
   }
 }
 
-class Item {
-  Item(this.name, this.icon);
+class ItemPacket {
+  ItemPacket(this.name, this.value);
 
   final String name;
-  final Widget icon;
+  final String value;
 }

@@ -70,35 +70,35 @@ class BalanceCard extends StatelessWidget {
                   ],
                 ),
                 Positioned(
-                  left: -150,
-                  top: -170,
+                  left: -170,
+                  top: -190,
                   child: CircleAvatar(
                     radius: 130,
                     backgroundColor: LightColor.lightBlue2,
                   ),
                 ),
                 Positioned(
-                  left: -160,
-                  top: -190,
+                  left: -180,
+                  top: -210,
                   child: CircleAvatar(
                     radius: 130,
                     backgroundColor: LightColor.lightBlue1,
                   ),
                 ),
                 Positioned(
-                  right: -170,
-                  bottom: -170,
-                  child: CircleAvatar(
-                    radius: 130,
-                    backgroundColor: LightColor.yellow2,
-                  ),
-                ),
-                Positioned(
-                  right: -160,
+                  right: -190,
                   bottom: -190,
                   child: CircleAvatar(
                     radius: 130,
-                    backgroundColor: LightColor.yellow,
+                    backgroundColor: Colors.pink,
+                  ),
+                ),
+                Positioned(
+                  right: -180,
+                  bottom: -210,
+                  child: CircleAvatar(
+                    radius: 130,
+                    backgroundColor:Colors.deepPurple,
                   ),
                 )
               ],

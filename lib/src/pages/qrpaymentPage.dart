@@ -44,6 +44,9 @@ class _QRPaymentPageState extends State<QRPaymentPage> {
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         SizedBox(width: 20),

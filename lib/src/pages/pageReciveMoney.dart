@@ -33,6 +33,9 @@ class _ReceiveMoneyPageState extends State<ReceiveMoneyPage> {
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         SizedBox(width: 20),

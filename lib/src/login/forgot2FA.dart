@@ -30,6 +30,9 @@ class _Forgot2FAPageState extends State<Forgot2FAPage> {
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         TitleText(

@@ -93,6 +93,9 @@ class _MoneyPaymentPageState extends State<MoneyPaymentPage> {
                     Row(
                       children: <Widget>[
                         BackButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
                           color: Colors.white,
                         ),
                         SizedBox(width: 20),
